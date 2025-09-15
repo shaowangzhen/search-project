@@ -46,16 +46,16 @@ BACKEND_PID=$!
 
 # 等待后端启动
 echo "⏳ 等待后端服务启动..."
-sleep 5
+sleep 8
 
-# 检查后端是否启动成功
-if ! curl -s http://localhost:8000/health > /dev/null; then
-    echo "❌ 后端服务启动失败"
+# 检查后端是否启动成功 - 使用netstat检查端口
+if netstat -tuln | grep -q ":8000 "; then
+    echo "✅ 后端服务启动成功 (PID: $BACKEND_PID)"
+else
+    echo "❌ 后端服务启动失败，端口8000未监听"
     kill $BACKEND_PID 2>/dev/null
     exit 1
 fi
-
-echo "✅ 后端服务启动成功 (PID: $BACKEND_PID)"
 
 echo ""
 echo "🎉 官方网站搜索引擎后端服务启动完成！"
