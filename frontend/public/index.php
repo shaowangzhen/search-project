@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         .header {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             border-bottom: 2px solid #1e3c72;
-            padding: 8px 0;
+            padding: 15px 0;
             box-shadow: 0 2px 8px rgba(30, 60, 114, 0.2);
         }
         
@@ -59,53 +59,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            gap: 20px;
             padding: 0 15px;
         }
         
         .logo {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             color: #ffffff;
             text-decoration: none;
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         
-        .search-box {
-            flex: 1;
-            max-width: 600px;
-            margin: 0 20px;
+        .search-container {
+            width: 100%;
+            max-width: 800px;
             position: relative;
         }
         
         .search-form {
             display: flex;
             background: #ffffff;
-            border: 2px solid #3498db;
-            border-radius: 6px;
+            border: 3px solid #3498db;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .search-form:focus-within {
+            border-color: #2980b9;
+            box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+            transform: translateY(-2px);
         }
         
         .search-input {
             flex: 1;
-            padding: 12px 16px;
+            padding: 16px 20px;
             border: none;
             outline: none;
-            font-size: 16px;
+            font-size: 18px;
             color: #2c3e50;
+            background: transparent;
+        }
+        
+        .search-input::placeholder {
+            color: #95a5a6;
+            font-size: 16px;
         }
         
         .search-btn {
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 16px 30px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             transition: all 0.3s ease;
+            min-width: 100px;
         }
         
         .search-btn:hover {
@@ -113,10 +127,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             transform: translateY(-1px);
         }
         
+        .search-btn:active {
+            transform: translateY(0);
+        }
+        
         .nav-section {
             background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
             border-bottom: 1px solid #1e3c72;
-            padding: 10px 0;
+            padding: 15px 0;
         }
         
         .nav-content {
@@ -139,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 16px;
+            padding: 10px 18px;
             border-radius: 6px;
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.1);
@@ -334,17 +352,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             .nav-links {
                 gap: 15px;
             }
+            
+            .search-container {
+                max-width: 700px;
+            }
         }
         
         @media (max-width: 768px) {
             .header-content {
-                flex-direction: column;
-                gap: 12px;
+                gap: 15px;
             }
             
-            .search-box {
-                width: 100%;
-                margin: 0;
+            .search-container {
+                max-width: 100%;
+                padding: 0 10px;
+            }
+            
+            .search-input {
+                font-size: 16px;
+                padding: 14px 16px;
+            }
+            
+            .search-btn {
+                font-size: 16px;
+                padding: 14px 24px;
+                min-width: 80px;
             }
             
             .content-grid {
@@ -361,12 +393,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             }
             
             .nav-links a {
-                padding: 6px 12px;
+                padding: 8px 14px;
                 font-size: 13px;
             }
         }
         
         @media (max-width: 480px) {
+            .logo {
+                font-size: 24px;
+            }
+            
+            .search-input {
+                font-size: 14px;
+                padding: 12px 14px;
+            }
+            
+            .search-btn {
+                font-size: 14px;
+                padding: 12px 20px;
+                min-width: 70px;
+            }
+            
             .content-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -386,7 +433,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
     <div class="header">
         <div class="header-content">
             <a href="/" class="logo">官方网站直达</a>
-            <div class="search-box">
+            <div class="search-container">
                 <form method="POST" class="search-form">
                     <input type="text" name="query" class="search-input" placeholder="请输入搜索关键词..." required>
                     <button type="submit" class="search-btn">搜索</button>
