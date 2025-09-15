@@ -1,6 +1,6 @@
 <?php
 /**
- * 官方网站搜索引擎 - 完全模仿hao123.com
+ * 官方网站直达 - 完全模仿hao123.com
  */
 
 // 设置错误报告
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>官方网站搜索引擎 - 专业搜索官方网站</title>
+    <title>官方网站直达 - 专业直达官方网站</title>
     <style>
         * {
             margin: 0;
@@ -349,7 +349,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
 <body>
     <div class="header">
         <div class="header-content">
-            <a href="/" class="logo">官方网站搜索引擎</a>
+            <a href="/" class="logo">官方网站直达</a>
             <div class="search-box">
                 <form method="POST" class="search-form">
                     <input type="text" name="query" class="search-input" placeholder="请输入搜索关键词..." required>
@@ -591,12 +591,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         </div>
         
         <div class="ad-banner">
-            <div class="ad-text">💡 提示：我们专门搜索官方网站，自动过滤广告和推广内容，为您提供最权威的搜索结果</div>
+            <div class="ad-text">💡 提示：我们专门直达官方网站，自动过滤广告和推广内容，为您提供最权威的搜索结果</div>
         </div>
     </div>
     
     <div class="footer">
-        <p>© 2024 官方网站搜索引擎 | 专业搜索官方网站，过滤广告和推广内容 | 
+        <p>© 2024 官方网站直达 | 专业直达官方网站，过滤广告和推广内容 | 
         <a href="http://localhost:8000/docs" target="_blank">API文档</a> | 
         <a href="http://localhost:8000/health" target="_blank">服务状态</a></p>
     </div>
