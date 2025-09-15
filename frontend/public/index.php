@@ -42,16 +42,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         
         body {
             font-family: "Microsoft YaHei", Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.2;
-            font-size: 12px;
+            background-color: #f0f4f8;
+            color: #2c3e50;
+            line-height: 1.3;
+            font-size: 14px;
         }
         
         .header {
-            background: #fff;
-            border-bottom: 1px solid #e5e5e5;
-            padding: 5px 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-bottom: 2px solid #1e3c72;
+            padding: 8px 0;
+            box-shadow: 0 2px 8px rgba(30, 60, 114, 0.2);
         }
         
         .header-content {
@@ -60,147 +61,162 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 10px;
+            padding: 0 15px;
         }
         
         .logo {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
-            color: #ff6600;
+            color: #ffffff;
             text-decoration: none;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         
         .search-box {
             flex: 1;
-            max-width: 500px;
-            margin: 0 15px;
+            max-width: 600px;
+            margin: 0 20px;
             position: relative;
         }
         
         .search-form {
             display: flex;
-            background: #fff;
-            border: 2px solid #ff6600;
-            border-radius: 3px;
+            background: #ffffff;
+            border: 2px solid #3498db;
+            border-radius: 6px;
             overflow: hidden;
+            box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
         }
         
         .search-input {
             flex: 1;
-            padding: 8px 12px;
+            padding: 12px 16px;
             border: none;
             outline: none;
-            font-size: 14px;
+            font-size: 16px;
+            color: #2c3e50;
         }
         
         .search-btn {
-            background: #ff6600;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 12px 20px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
+            transition: all 0.3s ease;
         }
         
         .search-btn:hover {
-            background: #e55a00;
+            background: linear-gradient(135deg, #2980b9 0%, #1f618d 100%);
+            transform: translateY(-1px);
         }
         
         .nav-links {
             display: flex;
-            gap: 15px;
+            gap: 20px;
         }
         
         .nav-links a {
-            color: #333;
+            color: #ffffff;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 14px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
         }
         
         .nav-links a:hover {
-            color: #ff6600;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
         }
         
         .nav-icon {
-            width: 16px;
-            height: 16px;
-            background: #ff6600;
-            border-radius: 2px;
+            width: 18px;
+            height: 18px;
+            background: #3498db;
+            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: bold;
         }
         
         .main-content {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 10px;
+            padding: 15px;
         }
         
         .hot-links {
-            background: #fff;
-            border-radius: 3px;
-            padding: 12px;
-            margin-bottom: 10px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.1);
+            border: 1px solid #e3f2fd;
         }
         
         .hot-title {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: bold;
-            color: #ff6600;
-            margin-bottom: 8px;
+            color: #1e3c72;
+            margin-bottom: 15px;
+            text-shadow: 0 1px 2px rgba(30, 60, 114, 0.1);
         }
         
         .hot-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 4px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 8px;
         }
         
         .hot-item {
             display: flex;
             align-items: center;
-            padding: 3px 5px;
-            border-radius: 2px;
-            transition: background-color 0.2s;
+            padding: 8px 10px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            background: #ffffff;
+            border: 1px solid #e3f2fd;
         }
         
         .hot-item:hover {
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(30, 60, 114, 0.2);
         }
         
         .hot-item a {
-            color: #333;
+            color: #2c3e50;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 14px;
             display: flex;
             align-items: center;
             width: 100%;
         }
         
         .hot-item a:hover {
-            color: #ff6600;
+            color: #1e3c72;
         }
         
         .hot-icon {
-            width: 16px;
-            height: 16px;
-            margin-right: 4px;
-            background: #ff6600;
-            border-radius: 2px;
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: bold;
             flex-shrink: 0;
         }
@@ -208,27 +224,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         .content-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
         
         .column {
-            background: #fff;
-            border-radius: 3px;
-            padding: 8px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.1);
+            border: 1px solid #e3f2fd;
         }
         
         .column-title {
-            font-size: 13px;
+            font-size: 16px;
             font-weight: bold;
-            color: #ff6600;
-            margin-bottom: 6px;
-            padding-bottom: 3px;
-            border-bottom: 1px solid #ff6600;
+            color: #1e3c72;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 8px;
         }
         
         .link-list {
@@ -236,52 +253,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         }
         
         .link-list li {
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
         
         .link-list a {
-            color: #333;
+            color: #2c3e50;
             text-decoration: none;
-            font-size: 11px;
+            font-size: 13px;
             display: block;
-            padding: 1px 0;
-            line-height: 1.2;
-        }
-        
-        .link-list a:hover {
-            color: #ff6600;
-        }
-        
-        .footer {
-            background: #333;
-            color: #999;
-            text-align: center;
-            padding: 10px;
-            margin-top: 15px;
-            font-size: 11px;
-        }
-        
-        .footer a {
-            color: #999;
-            text-decoration: none;
-        }
-        
-        .footer a:hover {
-            color: #ff6600;
-        }
-        
-        .ad-banner {
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-            margin: 8px 0;
+            padding: 4px 0;
+            line-height: 1.4;
+            transition: all 0.3s ease;
             border-radius: 3px;
         }
         
+        .link-list a:hover {
+            color: #1e3c72;
+            background: #e3f2fd;
+            padding-left: 8px;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #bdc3c7;
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            font-size: 13px;
+            box-shadow: 0 -2px 8px rgba(30, 60, 114, 0.2);
+        }
+        
+        .footer a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: #ffffff;
+        }
+        
+        .ad-banner {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 1px solid #90caf9;
+            padding: 15px;
+            text-align: center;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(30, 60, 114, 0.1);
+        }
+        
         .ad-text {
-            color: #666;
-            font-size: 11px;
+            color: #1e3c72;
+            font-size: 14px;
+            font-weight: 500;
         }
         
         @media (max-width: 1024px) {
@@ -293,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
-                gap: 8px;
+                gap: 12px;
             }
             
             .search-box {
@@ -306,7 +331,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             }
             
             .hot-grid {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             }
         }
         
@@ -341,11 +366,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                     <span>新闻</span>
                 </a>
                 <a href="#shopping">
-                    <div class="nav-icon">��</div>
+                    <div class="nav-icon">🛒</div>
                     <span>购物</span>
                 </a>
                 <a href="#entertainment">
-                    <div class="nav-icon">��</div>
+                    <div class="nav-icon">🎬</div>
                     <span>娱乐</span>
                 </a>
             </div>
