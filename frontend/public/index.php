@@ -44,13 +44,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             font-family: "Microsoft YaHei", Arial, sans-serif;
             background-color: #f5f5f5;
             color: #333;
-            line-height: 1.4;
+            line-height: 1.2;
+            font-size: 12px;
         }
         
         .header {
             background: #fff;
             border-bottom: 1px solid #e5e5e5;
-            padding: 10px 0;
+            padding: 5px 0;
         }
         
         .header-content {
@@ -59,11 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 0 10px;
         }
         
         .logo {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             color: #ff6600;
             text-decoration: none;
@@ -71,8 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         
         .search-box {
             flex: 1;
-            max-width: 600px;
-            margin: 0 20px;
+            max-width: 500px;
+            margin: 0 15px;
             position: relative;
         }
         
@@ -80,25 +81,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             display: flex;
             background: #fff;
             border: 2px solid #ff6600;
-            border-radius: 4px;
+            border-radius: 3px;
             overflow: hidden;
         }
         
         .search-input {
             flex: 1;
-            padding: 12px 15px;
+            padding: 8px 12px;
             border: none;
             outline: none;
-            font-size: 16px;
+            font-size: 14px;
         }
         
         .search-btn {
             background: #ff6600;
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 8px 15px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
         }
         
@@ -108,13 +109,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         
         .nav-links {
             display: flex;
-            gap: 20px;
+            gap: 15px;
         }
         
         .nav-links a {
             color: #333;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 12px;
         }
         
         .nav-links a:hover {
@@ -124,35 +125,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         .main-content {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
         }
         
         .hot-links {
             background: #fff;
-            border-radius: 4px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 3px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         
         .hot-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #ff6600;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         
         .hot-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 4px;
         }
         
         .hot-item {
             display: flex;
             align-items: center;
-            padding: 6px 8px;
-            border-radius: 4px;
+            padding: 3px 5px;
+            border-radius: 2px;
             transition: background-color 0.2s;
         }
         
@@ -163,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         .hot-item a {
             color: #333;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 12px;
             display: flex;
             align-items: center;
             width: 100%;
@@ -174,41 +175,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         }
         
         .hot-icon {
-            width: 18px;
-            height: 18px;
-            margin-right: 6px;
+            width: 16px;
+            height: 16px;
+            margin-right: 4px;
             background: #ff6600;
-            border-radius: 3px;
+            border-radius: 2px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
             flex-shrink: 0;
         }
         
         .content-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
         }
         
         .column {
             background: #fff;
-            border-radius: 4px;
-            padding: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 3px;
+            padding: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         
         .column-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             color: #ff6600;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #ff6600;
+            margin-bottom: 6px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid #ff6600;
         }
         
         .link-list {
@@ -216,16 +217,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         }
         
         .link-list li {
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         
         .link-list a {
             color: #333;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 11px;
             display: block;
-            padding: 2px 0;
-            line-height: 1.3;
+            padding: 1px 0;
+            line-height: 1.2;
         }
         
         .link-list a:hover {
@@ -236,8 +237,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             background: #333;
             color: #999;
             text-align: center;
-            padding: 20px;
-            margin-top: 30px;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 11px;
         }
         
         .footer a {
@@ -252,27 +254,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         .ad-banner {
             background: #f0f0f0;
             border: 1px solid #ddd;
-            padding: 15px;
+            padding: 8px;
             text-align: center;
-            margin: 15px 0;
-            border-radius: 4px;
+            margin: 8px 0;
+            border-radius: 3px;
         }
         
         .ad-text {
             color: #666;
-            font-size: 13px;
+            font-size: 11px;
         }
         
         @media (max-width: 1024px) {
             .content-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(4, 1fr);
             }
         }
         
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
-                gap: 15px;
+                gap: 8px;
             }
             
             .search-box {
@@ -281,17 +283,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             }
             
             .content-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
             
             .hot-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             }
         }
         
         @media (max-width: 480px) {
             .content-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
             
             .hot-grid {
@@ -323,198 +325,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         <div class="hot-links">
             <div class="hot-title">🔥 热门网站</div>
             <div class="hot-grid">
-                <div class="hot-item">
-                    <a href="https://www.baidu.com" target="_blank">
-                        <div class="hot-icon">百</div>
-                        <span>百度</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.taobao.com" target="_blank">
-                        <div class="hot-icon">淘</div>
-                        <span>淘宝</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.qq.com" target="_blank">
-                        <div class="hot-icon">Q</div>
-                        <span>腾讯</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.sina.com.cn" target="_blank">
-                        <div class="hot-icon">新</div>
-                        <span>新浪</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.163.com" target="_blank">
-                        <div class="hot-icon">网</div>
-                        <span>网易</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.sohu.com" target="_blank">
-                        <div class="hot-icon">搜</div>
-                        <span>搜狐</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.youku.com" target="_blank">
-                        <div class="hot-icon">优</div>
-                        <span>优酷</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.iqiyi.com" target="_blank">
-                        <div class="hot-icon">爱</div>
-                        <span>爱奇艺</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.douban.com" target="_blank">
-                        <div class="hot-icon">豆</div>
-                        <span>豆瓣</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.zhihu.com" target="_blank">
-                        <div class="hot-icon">知</div>
-                        <span>知乎</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.jd.com" target="_blank">
-                        <div class="hot-icon">京</div>
-                        <span>京东</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.tmall.com" target="_blank">
-                        <div class="hot-icon">天</div>
-                        <span>天猫</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.weibo.com" target="_blank">
-                        <div class="hot-icon">微</div>
-                        <span>微博</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.bilibili.com" target="_blank">
-                        <div class="hot-icon">B</div>
-                        <span>哔哩哔哩</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.douyin.com" target="_blank">
-                        <div class="hot-icon">抖</div>
-                        <span>抖音</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.kuaishou.com" target="_blank">
-                        <div class="hot-icon">快</div>
-                        <span>快手</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.meituan.com" target="_blank">
-                        <div class="hot-icon">美</div>
-                        <span>美团</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.dianping.com" target="_blank">
-                        <div class="hot-icon">大</div>
-                        <span>大众点评</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.ctrip.com" target="_blank">
-                        <div class="hot-icon">携</div>
-                        <span>携程</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.qunar.com" target="_blank">
-                        <div class="hot-icon">去</div>
-                        <span>去哪儿</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.58.com" target="_blank">
-                        <div class="hot-icon">5</div>
-                        <span>58同城</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.ganji.com" target="_blank">
-                        <div class="hot-icon">赶</div>
-                        <span>赶集网</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.12306.cn" target="_blank">
-                        <div class="hot-icon">1</div>
-                        <span>12306</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.ifeng.com" target="_blank">
-                        <div class="hot-icon">凤</div>
-                        <span>凤凰网</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.people.com.cn" target="_blank">
-                        <div class="hot-icon">人</div>
-                        <span>人民网</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.xinhuanet.com" target="_blank">
-                        <div class="hot-icon">新</div>
-                        <span>新华网</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.cctv.com" target="_blank">
-                        <div class="hot-icon">央</div>
-                        <span>央视网</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.360.cn" target="_blank">
-                        <div class="hot-icon">3</div>
-                        <span>360</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.sogou.com" target="_blank">
-                        <div class="hot-icon">搜</div>
-                        <span>搜狗</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.hao123.com" target="_blank">
-                        <div class="hot-icon">好</div>
-                        <span>hao123</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.2345.com" target="_blank">
-                        <div class="hot-icon">2</div>
-                        <span>2345</span>
-                    </a>
-                </div>
-                <div class="hot-item">
-                    <a href="https://www.5566.net" target="_blank">
-                        <div class="hot-icon">5</div>
-                        <span>5566</span>
-                    </a>
-                </div>
+                <div class="hot-item"><a href="https://www.baidu.com" target="_blank"><div class="hot-icon">百</div><span>百度</span></a></div>
+                <div class="hot-item"><a href="https://www.taobao.com" target="_blank"><div class="hot-icon">淘</div><span>淘宝</span></a></div>
+                <div class="hot-item"><a href="https://www.qq.com" target="_blank"><div class="hot-icon">Q</div><span>腾讯</span></a></div>
+                <div class="hot-item"><a href="https://www.sina.com.cn" target="_blank"><div class="hot-icon">新</div><span>新浪</span></a></div>
+                <div class="hot-item"><a href="https://www.163.com" target="_blank"><div class="hot-icon">网</div><span>网易</span></a></div>
+                <div class="hot-item"><a href="https://www.sohu.com" target="_blank"><div class="hot-icon">搜</div><span>搜狐</span></a></div>
+                <div class="hot-item"><a href="https://www.youku.com" target="_blank"><div class="hot-icon">优</div><span>优酷</span></a></div>
+                <div class="hot-item"><a href="https://www.iqiyi.com" target="_blank"><div class="hot-icon">爱</div><span>爱奇艺</span></a></div>
+                <div class="hot-item"><a href="https://www.douban.com" target="_blank"><div class="hot-icon">豆</div><span>豆瓣</span></a></div>
+                <div class="hot-item"><a href="https://www.zhihu.com" target="_blank"><div class="hot-icon">知</div><span>知乎</span></a></div>
+                <div class="hot-item"><a href="https://www.jd.com" target="_blank"><div class="hot-icon">京</div><span>京东</span></a></div>
+                <div class="hot-item"><a href="https://www.tmall.com" target="_blank"><div class="hot-icon">天</div><span>天猫</span></a></div>
+                <div class="hot-item"><a href="https://www.weibo.com" target="_blank"><div class="hot-icon">微</div><span>微博</span></a></div>
+                <div class="hot-item"><a href="https://www.bilibili.com" target="_blank"><div class="hot-icon">B</div><span>哔哩哔哩</span></a></div>
+                <div class="hot-item"><a href="https://www.douyin.com" target="_blank"><div class="hot-icon">抖</div><span>抖音</span></a></div>
+                <div class="hot-item"><a href="https://www.kuaishou.com" target="_blank"><div class="hot-icon">快</div><span>快手</span></a></div>
+                <div class="hot-item"><a href="https://www.meituan.com" target="_blank"><div class="hot-icon">美</div><span>美团</span></a></div>
+                <div class="hot-item"><a href="https://www.dianping.com" target="_blank"><div class="hot-icon">大</div><span>大众点评</span></a></div>
+                <div class="hot-item"><a href="https://www.ctrip.com" target="_blank"><div class="hot-icon">携</div><span>携程</span></a></div>
+                <div class="hot-item"><a href="https://www.qunar.com" target="_blank"><div class="hot-icon">去</div><span>去哪儿</span></a></div>
+                <div class="hot-item"><a href="https://www.58.com" target="_blank"><div class="hot-icon">5</div><span>58同城</span></a></div>
+                <div class="hot-item"><a href="https://www.ganji.com" target="_blank"><div class="hot-icon">赶</div><span>赶集网</span></a></div>
+                <div class="hot-item"><a href="https://www.12306.cn" target="_blank"><div class="hot-icon">1</div><span>12306</span></a></div>
+                <div class="hot-item"><a href="https://www.ifeng.com" target="_blank"><div class="hot-icon">凤</div><span>凤凰网</span></a></div>
+                <div class="hot-item"><a href="https://www.people.com.cn" target="_blank"><div class="hot-icon">人</div><span>人民网</span></a></div>
+                <div class="hot-item"><a href="https://www.xinhuanet.com" target="_blank"><div class="hot-icon">新</div><span>新华网</span></a></div>
+                <div class="hot-item"><a href="https://www.cctv.com" target="_blank"><div class="hot-icon">央</div><span>央视网</span></a></div>
+                <div class="hot-item"><a href="https://www.360.cn" target="_blank"><div class="hot-icon">3</div><span>360</span></a></div>
+                <div class="hot-item"><a href="https://www.sogou.com" target="_blank"><div class="hot-icon">搜</div><span>搜狗</span></a></div>
+                <div class="hot-item"><a href="https://www.hao123.com" target="_blank"><div class="hot-icon">好</div><span>hao123</span></a></div>
             </div>
         </div>
         
@@ -537,6 +377,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                     <li><a href="https://www.toutiao.com" target="_blank">今日头条</a></li>
                     <li><a href="https://www.163.com" target="_blank">网易新闻</a></li>
                     <li><a href="https://www.zaobao.com" target="_blank">联合早报</a></li>
+                    <li><a href="https://www.chinanews.com" target="_blank">中新网</a></li>
+                    <li><a href="https://www.china.com.cn" target="_blank">中国网</a></li>
+                    <li><a href="https://www.ce.cn" target="_blank">中国经济网</a></li>
+                    <li><a href="https://www.21jingji.com" target="_blank">21经济网</a></li>
+                    <li><a href="https://www.nbd.com.cn" target="_blank">每日经济新闻</a></li>
                 </ul>
             </div>
             
@@ -558,6 +403,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                     <li><a href="https://www.pinduoduo.com" target="_blank">拼多多</a></li>
                     <li><a href="https://www.youzan.com" target="_blank">有赞</a></li>
                     <li><a href="https://www.kaola.com" target="_blank">网易考拉</a></li>
+                    <li><a href="https://www.yhd.com" target="_blank">1号店</a></li>
+                    <li><a href="https://www.womai.com" target="_blank">我买网</a></li>
+                    <li><a href="https://www.yixun.com" target="_blank">易迅网</a></li>
+                    <li><a href="https://www.lashou.com" target="_blank">拉手网</a></li>
+                    <li><a href="https://www.meituan.com" target="_blank">美团购物</a></li>
                 </ul>
             </div>
             
@@ -579,6 +429,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                     <li><a href="https://www.kugou.com" target="_blank">酷狗音乐</a></li>
                     <li><a href="https://www.kuwo.cn" target="_blank">酷我音乐</a></li>
                     <li><a href="https://www.douban.com" target="_blank">豆瓣</a></li>
+                    <li><a href="https://www.zhihu.com" target="_blank">知乎</a></li>
+                    <li><a href="https://www.weibo.com" target="_blank">微博</a></li>
+                    <li><a href="https://www.toutiao.com" target="_blank">今日头条</a></li>
+                    <li><a href="https://www.xiaohongshu.com" target="_blank">小红书</a></li>
+                    <li><a href="https://www.zhihu.com" target="_blank">知乎</a></li>
                 </ul>
             </div>
             
@@ -600,6 +455,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                     <li><a href="https://www.fang.com" target="_blank">房天下</a></li>
                     <li><a href="https://www.che168.com" target="_blank">二手车之家</a></li>
                     <li><a href="https://www.autohome.com.cn" target="_blank">汽车之家</a></li>
+                    <li><a href="https://www.bitauto.com" target="_blank">易车网</a></li>
+                    <li><a href="https://www.pcauto.com.cn" target="_blank">太平洋汽车</a></li>
+                    <li><a href="https://www.chexun.com" target="_blank">车讯网</a></li>
+                    <li><a href="https://www.51auto.com" target="_blank">51汽车</a></li>
+                    <li><a href="https://www.chexiu.com" target="_blank">车秀网</a></li>
                 </ul>
             </div>
             
@@ -621,6 +481,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                     <li><a href="https://angular.io" target="_blank">Angular官网</a></li>
                     <li><a href="https://getbootstrap.com" target="_blank">Bootstrap官网</a></li>
                     <li><a href="https://www.typescriptlang.org" target="_blank">TypeScript官网</a></li>
+                    <li><a href="https://www.php.net" target="_blank">PHP官网</a></li>
+                    <li><a href="https://www.java.com" target="_blank">Java官网</a></li>
+                    <li><a href="https://golang.org" target="_blank">Go官网</a></li>
+                    <li><a href="https://www.rust-lang.org" target="_blank">Rust官网</a></li>
+                    <li><a href="https://www.swift.org" target="_blank">Swift官网</a></li>
                 </ul>
             </div>
             
@@ -642,48 +507,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                     <li><a href="https://www.jdcloud.com" target="_blank">京东云官网</a></li>
                     <li><a href="https://www.volcengine.com" target="_blank">火山引擎官网</a></li>
                     <li><a href="https://www.qingcloud.com" target="_blank">青云官网</a></li>
-                </ul>
-            </div>
-            
-            <div class="column">
-                <div class="column-title">📚 学习资源</div>
-                <ul class="link-list">
-                    <li><a href="https://developer.mozilla.org" target="_blank">MDN官网</a></li>
-                    <li><a href="https://stackoverflow.com" target="_blank">Stack Overflow官网</a></li>
-                    <li><a href="https://www.w3schools.com" target="_blank">W3Schools官网</a></li>
-                    <li><a href="https://www.runoob.com" target="_blank">菜鸟教程官网</a></li>
-                    <li><a href="https://www.liaoxuefeng.com" target="_blank">廖雪峰官网</a></li>
-                    <li><a href="https://www.ruanyifeng.com" target="_blank">阮一峰官网</a></li>
-                    <li><a href="https://www.zhihu.com" target="_blank">知乎官网</a></li>
-                    <li><a href="https://www.csdn.net" target="_blank">CSDN官网</a></li>
-                    <li><a href="https://www.jianshu.com" target="_blank">简书官网</a></li>
-                    <li><a href="https://www.segmentfault.com" target="_blank">SegmentFault官网</a></li>
-                    <li><a href="https://www.imooc.com" target="_blank">慕课网官网</a></li>
-                    <li><a href="https://www.51cto.com" target="_blank">51CTO官网</a></li>
-                    <li><a href="https://www.iteye.com" target="_blank">ITeye官网</a></li>
-                    <li><a href="https://www.oschina.net" target="_blank">开源中国官网</a></li>
-                    <li><a href="https://www.infoq.cn" target="_blank">InfoQ官网</a></li>
-                </ul>
-            </div>
-            
-            <div class="column">
-                <div class="column-title">💰 财经理财</div>
-                <ul class="link-list">
-                    <li><a href="https://finance.sina.com.cn" target="_blank">新浪财经</a></li>
-                    <li><a href="https://www.eastmoney.com" target="_blank">东方财富</a></li>
-                    <li><a href="https://www.jrj.com.cn" target="_blank">金融界</a></li>
-                    <li><a href="https://www.10jqka.com.cn" target="_blank">同花顺</a></li>
-                    <li><a href="https://www.cnfol.com" target="_blank">中金在线</a></li>
-                    <li><a href="https://xueqiu.com" target="_blank">雪球</a></li>
-                    <li><a href="https://www.cnstock.com" target="_blank">中国证券网</a></li>
-                    <li><a href="https://www.stcn.com" target="_blank">证券时报网</a></li>
-                    <li><a href="https://www.21jingji.com" target="_blank">21经济网</a></li>
-                    <li><a href="https://www.caijing.com.cn" target="_blank">财经网</a></li>
-                    <li><a href="https://www.hexun.com" target="_blank">和讯网</a></li>
-                    <li><a href="https://www.ce.cn" target="_blank">中国经济网</a></li>
-                    <li><a href="https://www.fortunechina.com" target="_blank">财富中文网</a></li>
-                    <li><a href="https://www.ftchinese.com" target="_blank">FT中文网</a></li>
-                    <li><a href="https://www.wallstreetcn.com" target="_blank">华尔街见闻</a></li>
+                    <li><a href="https://www.ucloud.cn" target="_blank">UCloud官网</a></li>
+                    <li><a href="https://www.qcloud.com" target="_blank">腾讯云官网</a></li>
+                    <li><a href="https://www.aliyun.com" target="_blank">阿里云官网</a></li>
+                    <li><a href="https://www.huaweicloud.com" target="_blank">华为云官网</a></li>
+                    <li><a href="https://www.aws.amazon.com" target="_blank">AWS官网</a></li>
                 </ul>
             </div>
         </div>
