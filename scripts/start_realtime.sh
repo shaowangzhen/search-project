@@ -46,21 +46,24 @@ echo "🐍 启动Python后端服务..."
 python -m uvicorn api.main_realtime:app --host 0.0.0.0 --port 8000 --reload &
 BACKEND_PID=$!
 
-# 等待后端启动
+# 等待后端启动 - 增加等待时间并循环检查
 echo "⏳ 等待后端服务启动..."
-sleep 8
-
-# 检查后端是否启动成功 - 使用netstat检查端口
-if netstat -tuln | grep -q ":8000 "; then
-    echo "✅ 后端服务启动成功 (PID: $BACKEND_PID)"
-else
-    echo "❌ 后端服务启动失败，端口8000未监听"
-    kill $BACKEND_PID 2>/dev/null
-    exit 1
-fi
+for i in {1..15}; do
+    sleep 2
+    if netstat -tuln 2>/dev/null | grep -q ":8000 "; then
+        echo "✅ 后端服务启动成功 (PID: $BACKEND_PID)"
+        break
+    fi
+    if [ $i -eq 15 ]; then
+        echo "❌ 后端服务启动失败，端口8000未监听"
+        kill $BACKEND_PID 2>/dev/null
+        exit 1
+    fi
+    echo "   等待中... ($i/15)"
+done
 
 # 启动前端服务
-echo "�� 启动PHP前端服务..."
+echo "🌐 启动PHP前端服务..."
 cd ../frontend/public
 php -S localhost:8080 &
 FRONTEND_PID=$!
