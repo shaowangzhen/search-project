@@ -135,6 +135,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
             border-bottom: 1px solid #1e3c72;
             padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         
         .nav-content {
@@ -168,6 +171,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #3498db;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
         }
         
         .nav-icon {
@@ -269,6 +278,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             padding: 15px;
             box-shadow: 0 4px 12px rgba(30, 60, 114, 0.1);
             border: 1px solid #e3f2fd;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .column.highlight {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 2px solid #3498db;
+            box-shadow: 0 8px 24px rgba(52, 152, 219, 0.3);
+            transform: translateY(-4px);
+        }
+        
+        .column.highlight::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #3498db, #2980b9, #1e3c72, #2a5298);
+            border-radius: 10px;
+            z-index: -1;
+            animation: highlightGlow 2s ease-in-out;
+        }
+        
+        @keyframes highlightGlow {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
         }
         
         .column-title {
@@ -281,6 +318,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+        
+        .column.highlight .column-title {
+            color: #1e3c72;
+            border-bottom-color: #2980b9;
         }
         
         .link-list {
@@ -445,27 +487,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
     <div class="nav-section">
         <div class="nav-content">
             <div class="nav-links">
-                <a href="#news">
+                <a href="#news" class="nav-link" data-target="news">
                     <div class="nav-icon">📰</div>
                     <span>新闻资讯</span>
                 </a>
-                <a href="#shopping">
+                <a href="#shopping" class="nav-link" data-target="shopping">
                     <div class="nav-icon">🛒</div>
                     <span>购物网站</span>
                 </a>
-                <a href="#entertainment">
+                <a href="#entertainment" class="nav-link" data-target="entertainment">
                     <div class="nav-icon">🎬</div>
                     <span>娱乐休闲</span>
                 </a>
-                <a href="#life">
+                <a href="#life" class="nav-link" data-target="life">
                     <div class="nav-icon">💼</div>
                     <span>生活服务</span>
                 </a>
-                <a href="#development">
+                <a href="#development" class="nav-link" data-target="development">
                     <div class="nav-icon">💻</div>
                     <span>开发工具</span>
                 </a>
-                <a href="#cloud">
+                <a href="#cloud" class="nav-link" data-target="cloud">
                     <div class="nav-icon">☁️</div>
                     <span>云服务</span>
                 </a>
@@ -696,5 +738,99 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         <a href="http://localhost:8000/docs" target="_blank">API文档</a> | 
         <a href="http://localhost:8000/health" target="_blank">服务状态</a></p>
     </div>
+
+    <script>
+        // 导航锚点跳转和高亮功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const columns = document.querySelectorAll('.column');
+            
+            // 平滑滚动到目标区域
+            function smoothScrollTo(targetId) {
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    const offsetTop = targetElement.offsetTop - 100; // 考虑导航栏高度
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+            
+            // 高亮目标区域
+            function highlightTarget(targetId) {
+                // 移除所有高亮
+                columns.forEach(column => {
+                    column.classList.remove('highlight');
+                });
+                
+                // 添加高亮到目标区域
+                const targetColumn = document.getElementById(targetId);
+                if (targetColumn) {
+                    targetColumn.classList.add('highlight');
+                    
+                    // 3秒后移除高亮
+                    setTimeout(() => {
+                        targetColumn.classList.remove('highlight');
+                    }, 3000);
+                }
+            }
+            
+            // 更新导航栏活动状态
+            function updateActiveNav(targetId) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                const activeLink = document.querySelector(`[data-target="${targetId}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+            
+            // 绑定导航点击事件
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-target');
+                    
+                    // 平滑滚动
+                    smoothScrollTo(targetId);
+                    
+                    // 高亮目标区域
+                    highlightTarget(targetId);
+                    
+                    // 更新导航状态
+                    updateActiveNav(targetId);
+                });
+            });
+            
+            // 监听滚动事件，更新导航栏活动状态
+            let ticking = false;
+            function updateNavOnScroll() {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        const scrollTop = window.pageYOffset;
+                        const navHeight = document.querySelector('.nav-section').offsetHeight;
+                        
+                        columns.forEach(column => {
+                            const columnTop = column.offsetTop - navHeight - 50;
+                            const columnBottom = columnTop + column.offsetHeight;
+                            
+                            if (scrollTop >= columnTop && scrollTop < columnBottom) {
+                                const columnId = column.getAttribute('id');
+                                updateActiveNav(columnId);
+                            }
+                        });
+                        
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }
+            
+            window.addEventListener('scroll', updateNavOnScroll);
+        });
+    </script>
 </body>
 </html>
