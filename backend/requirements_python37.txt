@@ -1,0 +1,29 @@
+# Web Framework - 兼容Python 3.7的版本
+fastapi==0.95.2
+uvicorn[standard]==0.22.0
+
+# HTTP Client
+aiohttp==3.8.5
+httpx==0.24.1
+
+# HTML Parsing
+beautifulsoup4==4.11.2
+lxml==4.9.2
+
+# AI/ML - 兼容Python 3.7的版本
+spacy==3.6.1
+transformers==4.30.2
+sentence-transformers==2.2.2
+numpy==1.21.6
+pandas==1.5.3
+
+# Utilities
+python-dotenv==1.0.0
+pydantic==1.10.12
+loguru==0.7.0
+whois==0.9.28
+
+# Development
+pytest==7.4.0
+black==23.3.0
+flake8==6.0.0
