@@ -18,11 +18,6 @@ if [[ "$PYTHON_VERSION" < "3.7" ]]; then
     exit 1
 fi
 
-# 检查PHP环境
-if ! command -v php &> /dev/null; then
-    echo "❌ PHP 未安装，请先安装 PHP"
-    exit 1
-fi
 
 # 进入后端目录
 cd backend
@@ -49,31 +44,8 @@ BACKEND_PID=$!
 # 等待后端启动
 sleep 3
 
-# 进入前端目录
-cd ../frontend
-
-# 启动前端服务
-echo "🐘 启动PHP前端服务..."
-php -S localhost:8080 -t public &
-FRONTEND_PID=$!
-
-echo ""
-echo "✅ 服务启动完成！"
-echo ""
-echo "🌐 访问地址："
-echo "   前端: http://localhost:8080"
-echo "   后端API: http://localhost:8000"
-echo "   API文档: http://localhost:8000/docs"
-echo ""
-echo "🔍 实时搜索特性："
-echo "   - 多搜索引擎聚合 (Google, Bing, DuckDuckGo)"
-echo "   - 实时官方网站识别"
-echo "   - 权威性评分排序"
-echo "   - 无数据存储依赖"
-echo "   - Python 3.7兼容"
-echo ""
 echo "⏹️  停止服务: Ctrl+C"
 
 # 等待用户中断
-trap "echo '🛑 停止服务...'; kill $BACKEND_PID $FRONTEND_PID; exit" INT
+trap "echo '🛑 停止服务...'; kill $BACKEND_PID; exit" INT
 wait
