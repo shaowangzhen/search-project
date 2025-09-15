@@ -1,6 +1,6 @@
 <?php
 /**
- * 官方网站直达 - 完全模仿hao123.com
+ * 官方网站搜索引擎 - 完全模仿hao123.com
  */
 
 // 设置错误报告
@@ -113,9 +113,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             transform: translateY(-1px);
         }
         
+        .nav-section {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            border-bottom: 1px solid #1e3c72;
+            padding: 10px 0;
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
         .nav-links {
             display: flex;
             gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         
         .nav-links a {
@@ -125,14 +139,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 12px;
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 6px;
             transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .nav-links a:hover {
             background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
         .nav-icon {
@@ -313,6 +330,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             .content-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
+            
+            .nav-links {
+                gap: 15px;
+            }
         }
         
         @media (max-width: 768px) {
@@ -333,6 +354,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             .hot-grid {
                 grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             }
+            
+            .nav-links {
+                gap: 10px;
+                justify-content: flex-start;
+            }
+            
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -342,6 +373,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             
             .hot-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -356,22 +392,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                     <button type="submit" class="search-btn">搜索</button>
                 </form>
             </div>
+        </div>
+    </div>
+    
+    <div class="nav-section">
+        <div class="nav-content">
             <div class="nav-links">
-                <a href="/">
-                    <div class="nav-icon">🏠</div>
-                    <span>首页</span>
-                </a>
                 <a href="#news">
                     <div class="nav-icon">📰</div>
-                    <span>新闻</span>
+                    <span>新闻资讯</span>
                 </a>
                 <a href="#shopping">
                     <div class="nav-icon">🛒</div>
-                    <span>购物</span>
+                    <span>购物网站</span>
                 </a>
                 <a href="#entertainment">
                     <div class="nav-icon">🎬</div>
-                    <span>娱乐</span>
+                    <span>娱乐休闲</span>
+                </a>
+                <a href="#life">
+                    <div class="nav-icon">💼</div>
+                    <span>生活服务</span>
+                </a>
+                <a href="#development">
+                    <div class="nav-icon">💻</div>
+                    <span>开发工具</span>
+                </a>
+                <a href="#cloud">
+                    <div class="nav-icon">☁️</div>
+                    <span>云服务</span>
                 </a>
             </div>
         </div>
@@ -502,7 +551,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                 </ul>
             </div>
             
-            <div class="column">
+            <div class="column" id="life">
                 <div class="column-title">
                     <span>💼</span>
                     <span>生活服务</span>
@@ -531,7 +580,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                 </ul>
             </div>
             
-            <div class="column">
+            <div class="column" id="development">
                 <div class="column-title">
                     <span>💻</span>
                     <span>开发工具</span>
@@ -560,7 +609,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                 </ul>
             </div>
             
-            <div class="column">
+            <div class="column" id="cloud">
                 <div class="column-title">
                     <span>☁️</span>
                     <span>云服务</span>
