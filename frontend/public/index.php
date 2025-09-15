@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>官方网站直达 - 专业直达官方网站</title>
+    <title>官网直达 - 专业直达官方网站</title>
     <style>
         * {
             margin: 0;
@@ -59,23 +59,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 20px;
+            justify-content: space-between;
+            gap: 30px;
             padding: 0 15px;
         }
         
         .logo {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
             color: #ffffff;
             text-decoration: none;
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         
         .search-container {
-            width: 100%;
-            max-width: 800px;
+            flex: 1;
+            max-width: 600px;
             position: relative;
         }
         
@@ -396,18 +398,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             }
             
             .search-container {
-                max-width: 700px;
+                max-width: 500px;
             }
         }
         
         @media (max-width: 768px) {
             .header-content {
-                gap: 15px;
+                flex-direction: column;
+                gap: 20px;
             }
             
             .search-container {
                 max-width: 100%;
-                padding: 0 10px;
+                width: 100%;
             }
             
             .search-input {
@@ -442,7 +445,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         
         @media (max-width: 480px) {
             .logo {
-                font-size: 24px;
+                font-size: 28px;
             }
             
             .search-input {
@@ -474,7 +477,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
 <body>
     <div class="header">
         <div class="header-content">
-            <a href="/" class="logo">官方网站直达</a>
+            <a href="/" class="logo">官网直达</a>
             <div class="search-container">
                 <form method="POST" class="search-form">
                     <input type="text" name="query" class="search-input" placeholder="请输入搜索关键词..." required>
@@ -734,7 +737,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
     </div>
     
     <div class="footer">
-        <p>© 2024 官方网站直达 | 专业直达官方网站，过滤广告和推广内容 | 
+        <p>© 2024 官网直达 | 专业直达官方网站，过滤广告和推广内容 | 
         <a href="http://localhost:8000/docs" target="_blank">API文档</a> | 
         <a href="http://localhost:8000/health" target="_blank">服务状态</a></p>
     </div>
