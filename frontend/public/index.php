@@ -126,49 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             padding: 20px;
         }
         
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .column {
-            background: #fff;
-            border-radius: 4px;
-            padding: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .column-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #ff6600;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #ff6600;
-        }
-        
-        .link-list {
-            list-style: none;
-        }
-        
-        .link-list li {
-            margin-bottom: 8px;
-        }
-        
-        .link-list a {
-            color: #333;
-            text-decoration: none;
-            font-size: 14px;
-            display: block;
-            padding: 3px 0;
-        }
-        
-        .link-list a:hover {
-            color: #ff6600;
-        }
-        
         .hot-links {
             background: #fff;
             border-radius: 4px;
@@ -227,6 +184,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             color: white;
             font-size: 12px;
             font-weight: bold;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .column {
+            background: #fff;
+            border-radius: 4px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .column-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff6600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ff6600;
+        }
+        
+        .link-list {
+            list-style: none;
+        }
+        
+        .link-list li {
+            margin-bottom: 8px;
+        }
+        
+        .link-list a {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            padding: 3px 0;
+        }
+        
+        .link-list a:hover {
+            color: #ff6600;
         }
         
         .footer {
@@ -302,54 +302,126 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
     
     <div class="main-content">
         <div class="hot-links">
-            <div class="hot-title">🔥 热门官方网站</div>
+            <div class="hot-title">🔥 热门网站</div>
             <div class="hot-grid">
                 <div class="hot-item">
-                    <a href="https://www.python.org" target="_blank">
-                        <div class="hot-icon">Py</div>
-                        <span>Python官网</span>
+                    <a href="https://www.baidu.com" target="_blank">
+                        <div class="hot-icon">百</div>
+                        <span>百度</span>
                     </a>
                 </div>
                 <div class="hot-item">
-                    <a href="https://nodejs.org" target="_blank">
-                        <div class="hot-icon">JS</div>
-                        <span>Node.js官网</span>
+                    <a href="https://www.taobao.com" target="_blank">
+                        <div class="hot-icon">淘</div>
+                        <span>淘宝</span>
                     </a>
                 </div>
                 <div class="hot-item">
-                    <a href="https://reactjs.org" target="_blank">
-                        <div class="hot-icon">R</div>
-                        <span>React官网</span>
+                    <a href="https://www.qq.com" target="_blank">
+                        <div class="hot-icon">Q</div>
+                        <span>腾讯</span>
                     </a>
                 </div>
                 <div class="hot-item">
-                    <a href="https://vuejs.org" target="_blank">
-                        <div class="hot-icon">V</div>
-                        <span>Vue.js官网</span>
+                    <a href="https://www.sina.com.cn" target="_blank">
+                        <div class="hot-icon">新</div>
+                        <span>新浪</span>
                     </a>
                 </div>
                 <div class="hot-item">
-                    <a href="https://www.mysql.com" target="_blank">
-                        <div class="hot-icon">M</div>
-                        <span>MySQL官网</span>
+                    <a href="https://www.163.com" target="_blank">
+                        <div class="hot-icon">网</div>
+                        <span>网易</span>
                     </a>
                 </div>
                 <div class="hot-item">
-                    <a href="https://www.docker.com" target="_blank">
-                        <div class="hot-icon">D</div>
-                        <span>Docker官网</span>
+                    <a href="https://www.sohu.com" target="_blank">
+                        <div class="hot-icon">搜</div>
+                        <span>搜狐</span>
                     </a>
                 </div>
                 <div class="hot-item">
-                    <a href="https://github.com" target="_blank">
-                        <div class="hot-icon">G</div>
-                        <span>GitHub官网</span>
+                    <a href="https://www.youku.com" target="_blank">
+                        <div class="hot-icon">优</div>
+                        <span>优酷</span>
                     </a>
                 </div>
                 <div class="hot-item">
-                    <a href="https://aws.amazon.com" target="_blank">
-                        <div class="hot-icon">A</div>
-                        <span>AWS官网</span>
+                    <a href="https://www.iqiyi.com" target="_blank">
+                        <div class="hot-icon">爱</div>
+                        <span>爱奇艺</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.douban.com" target="_blank">
+                        <div class="hot-icon">豆</div>
+                        <span>豆瓣</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.zhihu.com" target="_blank">
+                        <div class="hot-icon">知</div>
+                        <span>知乎</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.jd.com" target="_blank">
+                        <div class="hot-icon">京</div>
+                        <span>京东</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.tmall.com" target="_blank">
+                        <div class="hot-icon">天</div>
+                        <span>天猫</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.weibo.com" target="_blank">
+                        <div class="hot-icon">微</div>
+                        <span>微博</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.bilibili.com" target="_blank">
+                        <div class="hot-icon">B</div>
+                        <span>哔哩哔哩</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.douyin.com" target="_blank">
+                        <div class="hot-icon">抖</div>
+                        <span>抖音</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.kuaishou.com" target="_blank">
+                        <div class="hot-icon">快</div>
+                        <span>快手</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.meituan.com" target="_blank">
+                        <div class="hot-icon">美</div>
+                        <span>美团</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.dianping.com" target="_blank">
+                        <div class="hot-icon">大</div>
+                        <span>大众点评</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.ctrip.com" target="_blank">
+                        <div class="hot-icon">携</div>
+                        <span>携程</span>
+                    </a>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.qunar.com" target="_blank">
+                        <div class="hot-icon">去</div>
+                        <span>去哪儿</span>
                     </a>
                 </div>
             </div>
