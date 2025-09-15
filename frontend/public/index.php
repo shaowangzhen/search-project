@@ -116,10 +116,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             color: #333;
             text-decoration: none;
             font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
         
         .nav-links a:hover {
             color: #ff6600;
+        }
+        
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            background: #ff6600;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
         }
         
         .main-content {
@@ -210,6 +226,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             margin-bottom: 6px;
             padding-bottom: 3px;
             border-bottom: 1px solid #ff6600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
         
         .link-list {
@@ -313,10 +332,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                 </form>
             </div>
             <div class="nav-links">
-                <a href="/">首页</a>
-                <a href="#news">新闻</a>
-                <a href="#shopping">购物</a>
-                <a href="#entertainment">娱乐</a>
+                <a href="/">
+                    <div class="nav-icon">🏠</div>
+                    <span>首页</span>
+                </a>
+                <a href="#news">
+                    <div class="nav-icon">📰</div>
+                    <span>新闻</span>
+                </a>
+                <a href="#shopping">
+                    <div class="nav-icon">��</div>
+                    <span>购物</span>
+                </a>
+                <a href="#entertainment">
+                    <div class="nav-icon">��</div>
+                    <span>娱乐</span>
+                </a>
             </div>
         </div>
     </div>
@@ -360,7 +391,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         
         <div class="content-grid">
             <div class="column" id="news">
-                <div class="column-title">📰 新闻资讯</div>
+                <div class="column-title">
+                    <span>📰</span>
+                    <span>新闻资讯</span>
+                </div>
                 <ul class="link-list">
                     <li><a href="https://www.baidu.com" target="_blank">百度新闻</a></li>
                     <li><a href="https://www.sina.com.cn" target="_blank">新浪新闻</a></li>
@@ -386,7 +420,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             </div>
             
             <div class="column" id="shopping">
-                <div class="column-title">🛒 购物网站</div>
+                <div class="column-title">
+                    <span>🛒</span>
+                    <span>购物网站</span>
+                </div>
                 <ul class="link-list">
                     <li><a href="https://www.taobao.com" target="_blank">淘宝网</a></li>
                     <li><a href="https://www.tmall.com" target="_blank">天猫</a></li>
@@ -412,7 +449,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             </div>
             
             <div class="column" id="entertainment">
-                <div class="column-title">🎬 娱乐休闲</div>
+                <div class="column-title">
+                    <span>🎬</span>
+                    <span>娱乐休闲</span>
+                </div>
                 <ul class="link-list">
                     <li><a href="https://www.iqiyi.com" target="_blank">爱奇艺</a></li>
                     <li><a href="https://v.qq.com" target="_blank">腾讯视频</a></li>
@@ -438,7 +478,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             </div>
             
             <div class="column">
-                <div class="column-title">💼 生活服务</div>
+                <div class="column-title">
+                    <span>💼</span>
+                    <span>生活服务</span>
+                </div>
                 <ul class="link-list">
                     <li><a href="https://www.58.com" target="_blank">58同城</a></li>
                     <li><a href="https://www.ganji.com" target="_blank">赶集网</a></li>
@@ -464,7 +507,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             </div>
             
             <div class="column">
-                <div class="column-title">💻 开发工具</div>
+                <div class="column-title">
+                    <span>💻</span>
+                    <span>开发工具</span>
+                </div>
                 <ul class="link-list">
                     <li><a href="https://www.python.org" target="_blank">Python官网</a></li>
                     <li><a href="https://nodejs.org" target="_blank">Node.js官网</a></li>
@@ -490,7 +536,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             </div>
             
             <div class="column">
-                <div class="column-title">☁️ 云服务</div>
+                <div class="column-title">
+                    <span>☁️</span>
+                    <span>云服务</span>
+                </div>
                 <ul class="link-list">
                     <li><a href="https://aws.amazon.com" target="_blank">AWS官网</a></li>
                     <li><a href="https://azure.microsoft.com" target="_blank">Azure官网</a></li>
