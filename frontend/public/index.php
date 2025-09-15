@@ -1,6 +1,6 @@
 <?php
 /**
- * 官方网站搜索引擎 - hao123风格首页
+ * 官方网站搜索引擎 - 完全模仿hao123.com
  */
 
 // 设置错误报告
@@ -42,382 +42,378 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
         
         body {
             font-family: "Microsoft YaHei", Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background-color: #f5f5f5;
+            color: #333;
         }
         
-        .container {
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 10px 0;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6600;
+            text-decoration: none;
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 20px;
+            position: relative;
+        }
+        
+        .search-form {
+            display: flex;
+            background: #fff;
+            border: 2px solid #ff6600;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+        
+        .search-btn {
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .search-btn:hover {
+            background: #e55a00;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .nav-links a:hover {
+            color: #ff6600;
+        }
+        
+        .main-content {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
         
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .logo {
-            font-size: 48px;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .subtitle {
-            font-size: 18px;
-            color: rgba(255,255,255,0.9);
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
             margin-bottom: 30px;
         }
         
-        .search-container {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 40px;
+        .column {
+            background: #fff;
+            border-radius: 4px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
-        .search-form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .search-input {
-            flex: 1;
-            padding: 15px 20px;
-            border: 2px solid #ddd;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        
-        .search-input:focus {
-            border-color: #667eea;
-        }
-        
-        .search-btn {
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
+        .column-title {
             font-size: 16px;
             font-weight: bold;
-            transition: transform 0.2s;
+            color: #ff6600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ff6600;
         }
         
-        .search-btn:hover {
-            transform: translateY(-2px);
+        .link-list {
+            list-style: none;
         }
         
-        .search-tips {
-            text-align: center;
-            color: #666;
+        .link-list li {
+            margin-bottom: 8px;
+        }
+        
+        .link-list a {
+            color: #333;
+            text-decoration: none;
             font-size: 14px;
+            display: block;
+            padding: 3px 0;
         }
         
-        .links-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
+        .link-list a:hover {
+            color: #ff6600;
         }
         
-        .link-section {
-            background: white;
-            border-radius: 10px;
+        .hot-links {
+            background: #fff;
+            border-radius: 4px;
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
-        .section-title {
+        .hot-title {
             font-size: 18px;
             font-weight: bold;
-            color: #333;
+            color: #ff6600;
             margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
         }
         
-        .link-grid {
+        .hot-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
         
-        .link-item {
-            display: block;
-            padding: 10px;
-            text-decoration: none;
+        .hot-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .hot-item:hover {
+            background: #f5f5f5;
+        }
+        
+        .hot-item a {
             color: #333;
-            border-radius: 5px;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        
-        .link-item:hover {
-            background: #f0f0f0;
-            transform: translateY(-2px);
-        }
-        
-        .link-name {
+            text-decoration: none;
             font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            width: 100%;
         }
         
-        .link-desc {
+        .hot-item a:hover {
+            color: #ff6600;
+        }
+        
+        .hot-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            background: #ff6600;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
             font-size: 12px;
-            color: #666;
+            font-weight: bold;
         }
         
         .footer {
+            background: #333;
+            color: #999;
             text-align: center;
-            margin-top: 40px;
-            color: rgba(255,255,255,0.8);
+            padding: 20px;
+            margin-top: 30px;
         }
         
-        .feature-list {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
+        .footer a {
+            color: #999;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            color: #ff6600;
+        }
+        
+        .ad-banner {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 20px;
+            text-align: center;
             margin: 20px 0;
-            flex-wrap: wrap;
+            border-radius: 4px;
         }
         
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: rgba(255,255,255,0.9);
+        .ad-text {
+            color: #666;
             font-size: 14px;
         }
         
-        .feature-icon {
-            width: 20px;
-            height: 20px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-        }
-        
         @media (max-width: 768px) {
-            .search-form {
+            .header-content {
                 flex-direction: column;
+                gap: 15px;
             }
             
-            .links-container {
+            .search-box {
+                width: 100%;
+                margin: 0;
+            }
+            
+            .content-grid {
                 grid-template-columns: 1fr;
             }
             
-            .feature-list {
-                flex-direction: column;
-                gap: 15px;
+            .hot-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">🔍 官方网站搜索引擎</div>
-            <div class="subtitle">专业搜索官方网站，过滤广告和推广内容</div>
-            
-            <div class="feature-list">
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <span>实时搜索</span>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <span>AI识别</span>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <span>过滤广告</span>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">✓</div>
-                    <span>权威评分</span>
-                </div>
+    <div class="header">
+        <div class="header-content">
+            <a href="/" class="logo">官方网站搜索引擎</a>
+            <div class="search-box">
+                <form method="POST" class="search-form">
+                    <input type="text" name="query" class="search-input" placeholder="请输入搜索关键词..." required>
+                    <button type="submit" class="search-btn">搜索</button>
+                </form>
+            </div>
+            <div class="nav-links">
+                <a href="/">首页</a>
+                <a href="#tools">开发工具</a>
+                <a href="#cloud">云服务</a>
+                <a href="#learn">学习资源</a>
             </div>
         </div>
-        
-        <div class="search-container">
-            <form method="POST" class="search-form">
-                <input type="text" name="query" class="search-input" placeholder="请输入搜索关键词，如：Python官网、MySQL官方文档..." required>
-                <button type="submit" class="search-btn">搜索官方网站</button>
-            </form>
-            <div class="search-tips">
-                💡 提示：我们专门搜索官方网站，自动过滤广告和推广内容
-            </div>
-        </div>
-        
-        <div class="links-container">
-            <div class="link-section">
-                <div class="section-title">🛠️ 开发工具</div>
-                <div class="link-grid">
-                    <a href="https://www.python.org" class="link-item" target="_blank">
-                        <div class="link-name">Python</div>
-                        <div class="link-desc">编程语言</div>
-                    </a>
-                    <a href="https://nodejs.org" class="link-item" target="_blank">
-                        <div class="link-name">Node.js</div>
-                        <div class="link-desc">JavaScript运行时</div>
-                    </a>
-                    <a href="https://www.mysql.com" class="link-item" target="_blank">
-                        <div class="link-name">MySQL</div>
-                        <div class="link-desc">数据库</div>
-                    </a>
-                    <a href="https://www.postgresql.org" class="link-item" target="_blank">
-                        <div class="link-name">PostgreSQL</div>
-                        <div class="link-desc">数据库</div>
-                    </a>
-                    <a href="https://redis.io" class="link-item" target="_blank">
-                        <div class="link-name">Redis</div>
-                        <div class="link-desc">缓存数据库</div>
-                    </a>
-                    <a href="https://www.docker.com" class="link-item" target="_blank">
-                        <div class="link-name">Docker</div>
-                        <div class="link-desc">容器化</div>
-                    </a>
-                    <a href="https://git-scm.com" class="link-item" target="_blank">
-                        <div class="link-name">Git</div>
-                        <div class="link-desc">版本控制</div>
-                    </a>
-                    <a href="https://github.com" class="link-item" target="_blank">
-                        <div class="link-name">GitHub</div>
-                        <div class="link-desc">代码托管</div>
+    </div>
+    
+    <div class="main-content">
+        <div class="hot-links">
+            <div class="hot-title">🔥 热门官方网站</div>
+            <div class="hot-grid">
+                <div class="hot-item">
+                    <a href="https://www.python.org" target="_blank">
+                        <div class="hot-icon">Py</div>
+                        <span>Python官网</span>
                     </a>
                 </div>
-            </div>
-            
-            <div class="link-section">
-                <div class="section-title">🌐 前端框架</div>
-                <div class="link-grid">
-                    <a href="https://reactjs.org" class="link-item" target="_blank">
-                        <div class="link-name">React</div>
-                        <div class="link-desc">前端框架</div>
-                    </a>
-                    <a href="https://vuejs.org" class="link-item" target="_blank">
-                        <div class="link-name">Vue.js</div>
-                        <div class="link-desc">前端框架</div>
-                    </a>
-                    <a href="https://angular.io" class="link-item" target="_blank">
-                        <div class="link-name">Angular</div>
-                        <div class="link-desc">前端框架</div>
-                    </a>
-                    <a href="https://getbootstrap.com" class="link-item" target="_blank">
-                        <div class="link-name">Bootstrap</div>
-                        <div class="link-desc">CSS框架</div>
-                    </a>
-                    <a href="https://tailwindcss.com" class="link-item" target="_blank">
-                        <div class="link-name">Tailwind CSS</div>
-                        <div class="link-desc">CSS框架</div>
-                    </a>
-                    <a href="https://webpack.js.org" class="link-item" target="_blank">
-                        <div class="link-name">Webpack</div>
-                        <div class="link-desc">模块打包器</div>
-                    </a>
-                    <a href="https://vitejs.dev" class="link-item" target="_blank">
-                        <div class="link-name">Vite</div>
-                        <div class="link-desc">构建工具</div>
-                    </a>
-                    <a href="https://www.typescriptlang.org" class="link-item" target="_blank">
-                        <div class="link-name">TypeScript</div>
-                        <div class="link-desc">JavaScript超集</div>
+                <div class="hot-item">
+                    <a href="https://nodejs.org" target="_blank">
+                        <div class="hot-icon">JS</div>
+                        <span>Node.js官网</span>
                     </a>
                 </div>
-            </div>
-            
-            <div class="link-section">
-                <div class="section-title">☁️ 云服务</div>
-                <div class="link-grid">
-                    <a href="https://aws.amazon.com" class="link-item" target="_blank">
-                        <div class="link-name">AWS</div>
-                        <div class="link-desc">亚马逊云</div>
-                    </a>
-                    <a href="https://azure.microsoft.com" class="link-item" target="_blank">
-                        <div class="link-name">Azure</div>
-                        <div class="link-desc">微软云</div>
-                    </a>
-                    <a href="https://cloud.google.com" class="link-item" target="_blank">
-                        <div class="link-name">Google Cloud</div>
-                        <div class="link-desc">谷歌云</div>
-                    </a>
-                    <a href="https://www.aliyun.com" class="link-item" target="_blank">
-                        <div class="link-name">阿里云</div>
-                        <div class="link-desc">阿里云服务</div>
-                    </a>
-                    <a href="https://www.tencentcloud.com" class="link-item" target="_blank">
-                        <div class="link-name">腾讯云</div>
-                        <div class="link-desc">腾讯云服务</div>
-                    </a>
-                    <a href="https://vercel.com" class="link-item" target="_blank">
-                        <div class="link-name">Vercel</div>
-                        <div class="link-desc">前端部署</div>
-                    </a>
-                    <a href="https://www.netlify.com" class="link-item" target="_blank">
-                        <div class="link-name">Netlify</div>
-                        <div class="link-desc">静态网站</div>
-                    </a>
-                    <a href="https://www.heroku.com" class="link-item" target="_blank">
-                        <div class="link-name">Heroku</div>
-                        <div class="link-desc">应用托管</div>
+                <div class="hot-item">
+                    <a href="https://reactjs.org" target="_blank">
+                        <div class="hot-icon">R</div>
+                        <span>React官网</span>
                     </a>
                 </div>
-            </div>
-            
-            <div class="link-section">
-                <div class="section-title">📚 学习资源</div>
-                <div class="link-grid">
-                    <a href="https://developer.mozilla.org" class="link-item" target="_blank">
-                        <div class="link-name">MDN</div>
-                        <div class="link-desc">Web开发文档</div>
+                <div class="hot-item">
+                    <a href="https://vuejs.org" target="_blank">
+                        <div class="hot-icon">V</div>
+                        <span>Vue.js官网</span>
                     </a>
-                    <a href="https://stackoverflow.com" class="link-item" target="_blank">
-                        <div class="link-name">Stack Overflow</div>
-                        <div class="link-desc">编程问答</div>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.mysql.com" target="_blank">
+                        <div class="hot-icon">M</div>
+                        <span>MySQL官网</span>
                     </a>
-                    <a href="https://www.w3schools.com" class="link-item" target="_blank">
-                        <div class="link-name">W3Schools</div>
-                        <div class="link-desc">Web教程</div>
+                </div>
+                <div class="hot-item">
+                    <a href="https://www.docker.com" target="_blank">
+                        <div class="hot-icon">D</div>
+                        <span>Docker官网</span>
                     </a>
-                    <a href="https://www.runoob.com" class="link-item" target="_blank">
-                        <div class="link-name">菜鸟教程</div>
-                        <div class="link-desc">编程教程</div>
+                </div>
+                <div class="hot-item">
+                    <a href="https://github.com" target="_blank">
+                        <div class="hot-icon">G</div>
+                        <span>GitHub官网</span>
                     </a>
-                    <a href="https://www.liaoxuefeng.com" class="link-item" target="_blank">
-                        <div class="link-name">廖雪峰</div>
-                        <div class="link-desc">Python教程</div>
-                    </a>
-                    <a href="https://www.ruanyifeng.com" class="link-item" target="_blank">
-                        <div class="link-name">阮一峰</div>
-                        <div class="link-desc">技术博客</div>
-                    </a>
-                    <a href="https://www.zhihu.com" class="link-item" target="_blank">
-                        <div class="link-name">知乎</div>
-                        <div class="link-desc">知识问答</div>
-                    </a>
-                    <a href="https://www.csdn.net" class="link-item" target="_blank">
-                        <div class="link-name">CSDN</div>
-                        <div class="link-desc">技术社区</div>
+                </div>
+                <div class="hot-item">
+                    <a href="https://aws.amazon.com" target="_blank">
+                        <div class="hot-icon">A</div>
+                        <span>AWS官网</span>
                     </a>
                 </div>
             </div>
         </div>
         
-        <div class="footer">
-            <p>© 2024 官方网站搜索引擎 | 专业搜索官方网站，过滤广告和推广内容</p>
+        <div class="content-grid">
+            <div class="column" id="tools">
+                <div class="column-title">🛠️ 开发工具</div>
+                <ul class="link-list">
+                    <li><a href="https://www.python.org" target="_blank">Python官网</a></li>
+                    <li><a href="https://nodejs.org" target="_blank">Node.js官网</a></li>
+                    <li><a href="https://www.mysql.com" target="_blank">MySQL官网</a></li>
+                    <li><a href="https://www.postgresql.org" target="_blank">PostgreSQL官网</a></li>
+                    <li><a href="https://redis.io" target="_blank">Redis官网</a></li>
+                    <li><a href="https://www.docker.com" target="_blank">Docker官网</a></li>
+                    <li><a href="https://git-scm.com" target="_blank">Git官网</a></li>
+                    <li><a href="https://github.com" target="_blank">GitHub官网</a></li>
+                    <li><a href="https://www.jetbrains.com" target="_blank">JetBrains官网</a></li>
+                    <li><a href="https://code.visualstudio.com" target="_blank">VS Code官网</a></li>
+                </ul>
+            </div>
+            
+            <div class="column" id="cloud">
+                <div class="column-title">☁️ 云服务</div>
+                <ul class="link-list">
+                    <li><a href="https://aws.amazon.com" target="_blank">AWS官网</a></li>
+                    <li><a href="https://azure.microsoft.com" target="_blank">Azure官网</a></li>
+                    <li><a href="https://cloud.google.com" target="_blank">Google Cloud官网</a></li>
+                    <li><a href="https://www.aliyun.com" target="_blank">阿里云官网</a></li>
+                    <li><a href="https://www.tencentcloud.com" target="_blank">腾讯云官网</a></li>
+                    <li><a href="https://vercel.com" target="_blank">Vercel官网</a></li>
+                    <li><a href="https://www.netlify.com" target="_blank">Netlify官网</a></li>
+                    <li><a href="https://www.heroku.com" target="_blank">Heroku官网</a></li>
+                    <li><a href="https://www.digitalocean.com" target="_blank">DigitalOcean官网</a></li>
+                    <li><a href="https://www.linode.com" target="_blank">Linode官网</a></li>
+                </ul>
+            </div>
+            
+            <div class="column" id="learn">
+                <div class="column-title">📚 学习资源</div>
+                <ul class="link-list">
+                    <li><a href="https://developer.mozilla.org" target="_blank">MDN官网</a></li>
+                    <li><a href="https://stackoverflow.com" target="_blank">Stack Overflow官网</a></li>
+                    <li><a href="https://www.w3schools.com" target="_blank">W3Schools官网</a></li>
+                    <li><a href="https://www.runoob.com" target="_blank">菜鸟教程官网</a></li>
+                    <li><a href="https://www.liaoxuefeng.com" target="_blank">廖雪峰官网</a></li>
+                    <li><a href="https://www.ruanyifeng.com" target="_blank">阮一峰官网</a></li>
+                    <li><a href="https://www.zhihu.com" target="_blank">知乎官网</a></li>
+                    <li><a href="https://www.csdn.net" target="_blank">CSDN官网</a></li>
+                    <li><a href="https://www.jianshu.com" target="_blank">简书官网</a></li>
+                    <li><a href="https://www.segmentfault.com" target="_blank">SegmentFault官网</a></li>
+                </ul>
+            </div>
         </div>
+        
+        <div class="ad-banner">
+            <div class="ad-text">💡 提示：我们专门搜索官方网站，自动过滤广告和推广内容，为您提供最权威的搜索结果</div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2024 官方网站搜索引擎 | 专业搜索官方网站，过滤广告和推广内容 | 
+        <a href="http://localhost:8000/docs" target="_blank">API文档</a> | 
+        <a href="http://localhost:8000/health" target="_blank">服务状态</a></p>
     </div>
 </body>
 </html>
