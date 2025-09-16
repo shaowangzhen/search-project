@@ -2,7 +2,7 @@
 
 ## 概述
 
-实时搜索版本完全摒弃了数据存储依赖，每次搜索请求都会实时从多个搜索引擎获取结果，然后通过AI算法进行官方网站识别和权威性评分。
+实时搜索版本完全摒弃了数据存储依赖，每次搜索请求都会实时从6个搜索引擎获取结果，然后通过AI算法进行官方网站识别和权威性评分。
 
 ## 架构特点
 
@@ -13,27 +13,29 @@
 - 完全基于实时搜索
 
 ### 2. 多搜索引擎聚合
-- Google搜索引擎
-- Bing搜索引擎  
-- DuckDuckGo搜索引擎
-- 并行搜索，提高效率
+- **国际搜索引擎**：Google, Bing, DuckDuckGo
+- **中文搜索引擎**：百度, 搜狗, 360搜索
+- **并行搜索**：6个引擎同时搜索，提高效率和覆盖率
 
 ### 3. 实时官方网站识别
 - 基于多维度评分算法
 - 实时内容分析
 - 权威性验证
+- 支持中英文官方网站识别
 
 ## 技术架构
 
 ```
-用户请求 → PHP前端 → FastAPI后端 → 多搜索引擎 → AI分析 → 结果返回
+用户请求 → PHP前端 → FastAPI后端 → 6个搜索引擎 → AI分析 → 结果返回
                 ↓
            实时搜索服务
                 ↓
          ┌─────────────────┐
          │  搜索引擎聚合   │
-         │  Google + Bing  │
-         │  + DuckDuckGo   │
+         │ Google + Bing   │
+         │ + DuckDuckGo    │
+         │ + 百度 + 搜狗   │
+         │ + 360搜索       │
          └─────────────────┘
                 ↓
          ┌─────────────────┐
@@ -43,12 +45,24 @@
          └─────────────────┘
 ```
 
+## 支持的搜索引擎
+
+### 国际搜索引擎
+1. **Google** - 全球最大的搜索引擎
+2. **Bing** - 微软搜索引擎
+3. **DuckDuckGo** - 隐私保护搜索引擎
+
+### 中文搜索引擎
+4. **百度** - 中国最大的搜索引擎
+5. **搜狗** - 腾讯旗下搜索引擎
+6. **360搜索** - 奇虎360搜索引擎
+
 ## 核心组件
 
 ### 1. 实时搜索服务 (RealtimeSearchService)
 
 **功能**:
-- 并行搜索多个搜索引擎
+- 并行搜索6个搜索引擎
 - 结果去重和合并
 - 官方网站过滤
 - 权威性评分排序
@@ -56,9 +70,9 @@
 **关键方法**:
 ```python
 async def search(query: str, max_results: int = 10) -> Dict[str, Any]
-async def _search_engine(engine: Dict, query: str, max_results: int) -> List[Dict]
-def _parse_search_results(html: str, engine_name: str) -> List[Dict]
-async def _filter_official_websites(results: List[Dict]) -> List[Dict]
+async def _fetch_results(session: httpx.AsyncClient, engine: str, query: str)
+def _parse_results(html_content: str, engine: str) -> List[Dict]
+def _is_official_website(link: str, query: str) -> bool
 ```
 
 ### 2. 搜索引擎解析器
@@ -78,6 +92,21 @@ async def _filter_official_websites(results: List[Dict]) -> List[Dict]
 - 提取干净的数据
 - 处理无追踪格式
 
+**百度解析器**:
+- 解析百度搜索结果
+- 处理中文内容
+- 处理百度重定向链接
+
+**搜狗解析器**:
+- 解析搜狗搜索结果
+- 提取中文网站信息
+- 处理搜狗特有格式
+
+**360搜索解析器**:
+- 解析360搜索结果
+- 处理中文官方网站
+- 提取相关描述信息
+
 ### 3. 官方网站识别器
 
 **多维度评分**:
@@ -87,42 +116,52 @@ async def _filter_official_websites(results: List[Dict]) -> List[Dict]
 - 技术指标 (10%)
 
 **实时分析**:
-- 域名后缀检测
+- 域名后缀检测 (.gov, .edu, .org, .gov.cn, .edu.cn)
 - 内容关键词分析
 - 结构化内容识别
 - 技术指标验证
+- 中文官方网站关键词识别
+
+**中文支持**:
+- 支持中文域名识别
+- 中文关键词匹配
+- 中文官方网站特征识别
 
 ## API接口
 
 ### 搜索接口
 ```http
-POST /api/v1/search
+POST /search
 {
     "query": "搜索关键词",
-    "page": 1,
-    "size": 10,
-    "category": "可选分类"
+    "max_results": 20
 }
+```
+
+### 搜索引擎信息接口
+```http
+GET /engines
+```
+
+### 健康检查接口
+```http
+GET /health
 ```
 
 ### 响应格式
 ```json
 {
-    "total": 100,
-    "page": 1,
-    "size": 10,
+    "query": "搜索关键词",
+    "total_results": 15,
     "results": [
         {
-            "id": 123456,
             "title": "页面标题",
             "url": "https://example.com",
-            "snippet": "页面摘要",
-            "domain": "example.com",
-            "official_score": 0.85,
-            "last_updated": "2024-01-01T00:00:00Z",
-            "source": "Google"
+            "description": "页面摘要",
+            "source": "搜索引擎"
         }
-    ]
+    ],
+    "search_time": "实时搜索"
 }
 ```
 
@@ -148,8 +187,8 @@ POST /api/v1/search
 ## 性能优化
 
 ### 1. 并发搜索
-- 异步并行搜索多个引擎
-- 超时控制
+- 异步并行搜索6个引擎
+- 超时控制 (10秒)
 - 错误处理
 
 ### 2. 结果优化
@@ -183,7 +222,7 @@ POST /api/v1/search
 - 实时内容分析
 
 ### 2. 准确性
-- 多引擎交叉验证
+- 6个引擎交叉验证
 - AI智能识别
 - 权威性评分
 
@@ -197,6 +236,11 @@ POST /api/v1/search
 - 代码结构清晰
 - 易于调试
 
+### 5. 中文支持
+- 支持中文搜索引擎
+- 中文官方网站识别
+- 中文关键词匹配
+
 ## 注意事项
 
 ### 1. 搜索引擎限制
@@ -205,7 +249,7 @@ POST /api/v1/search
 - 处理反爬虫机制
 
 ### 2. 性能考虑
-- 搜索延迟较高
+- 搜索延迟较高 (6个引擎)
 - 需要网络连接
 - 结果数量有限
 
@@ -213,6 +257,11 @@ POST /api/v1/search
 - 依赖外部服务
 - 需要错误处理
 - 监控服务状态
+
+### 4. 中文处理
+- 中文编码处理
+- 中文URL解析
+- 中文内容识别
 
 ## 未来优化
 
@@ -230,3 +279,8 @@ POST /api/v1/search
 - 更智能的官方网站识别
 - 个性化搜索结果
 - 智能搜索建议
+
+### 4. 中文优化
+- 中文分词优化
+- 中文语义理解
+- 中文官方网站特征学习

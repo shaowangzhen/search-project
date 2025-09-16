@@ -12,7 +12,7 @@ from services.realtime_search_service import RealtimeSearchService
 
 app = FastAPI(
     title="官方网站搜索引擎 API",
-    description="一个实时搜索官方网站的API，支持多搜索引擎聚合和基础的官方网站识别。",
+    description="一个实时搜索官方网站的API，支持6个搜索引擎聚合：Google, Bing, DuckDuckGo, 百度, 搜狗, 360搜索。",
     version="1.0.0",
 )
 
@@ -45,7 +45,28 @@ class SearchResponse(BaseModel):
 @app.get("/health")
 async def health_check():
     """健康检查接口"""
-    return {"status": "healthy", "version": "1.0.0"}
+    return {
+        "status": "healthy", 
+        "version": "1.0.0",
+        "search_engines": ["Google", "Bing", "DuckDuckGo", "百度", "搜狗", "360搜索"],
+        "total_engines": 6
+    }
+
+# 搜索引擎信息
+@app.get("/engines")
+async def get_search_engines():
+    """获取支持的搜索引擎列表"""
+    return {
+        "engines": [
+            {"name": "Google", "url": "https://www.google.com", "type": "国际"},
+            {"name": "Bing", "url": "https://www.bing.com", "type": "国际"},
+            {"name": "DuckDuckGo", "url": "https://duckduckgo.com", "type": "隐私"},
+            {"name": "百度", "url": "https://www.baidu.com", "type": "中文"},
+            {"name": "搜狗", "url": "https://www.sogou.com", "type": "中文"},
+            {"name": "360搜索", "url": "https://www.so.com", "type": "中文"}
+        ],
+        "total": 6
+    }
 
 # 搜索接口
 @app.post("/search", response_model=SearchResponse)
@@ -75,8 +96,11 @@ async def root():
     return {
         "message": "官方网站搜索引擎",
         "version": "1.0.0",
+        "description": "支持6个搜索引擎的实时官方网站搜索",
+        "search_engines": ["Google", "Bing", "DuckDuckGo", "百度", "搜狗", "360搜索"],
         "docs": "/docs",
-        "health": "/health"
+        "health": "/health",
+        "engines": "/engines"
     }
 
 if __name__ == "__main__":
