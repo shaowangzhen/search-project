@@ -12,7 +12,7 @@ from services.realtime_search_service import RealtimeSearchService
 
 app = FastAPI(
     title="官方网站搜索引擎 API",
-    description="一个实时搜索官方网站的API，支持3个中文搜索引擎，采用5秒快速响应策略：总超时5秒，单个请求5秒，真正的并行搜索。",
+    description="一个实时搜索官方网站的API，支持2个中文搜索引擎，采用5秒快速响应策略：总超时5秒，单个请求5秒，真正的并行搜索。",
     version="1.0.0",
 )
 
@@ -50,13 +50,13 @@ async def health_check():
     return {
         "status": "healthy", 
         "version": "1.0.0",
-        "search_engines": ["百度", "搜狗", "360搜索"],
-        "total_engines": 3,
-        "strategy": "5秒快速响应策略 - 只使用中文搜索引擎",
+        "search_engines": ["百度", "搜狗"],
+        "total_engines": 2,
+        "strategy": "5秒快速响应策略 - 只使用百度、搜狗两个搜索引擎",
         "timeout_settings": {
             "total_timeout": "5.0秒",
             "single_request_timeout": "5.0秒",
-            "max_engines_used": 3
+            "max_engines_used": 2
         }
     }
 
@@ -67,22 +67,21 @@ async def get_search_engines():
     return {
         "engines": [
             {"name": "百度", "url": "https://www.baidu.com", "type": "中文", "priority": "高"},
-            {"name": "搜狗", "url": "https://www.sogou.com", "type": "中文", "priority": "中"},
-            {"name": "360搜索", "url": "https://www.so.com", "type": "中文", "priority": "中"}
+            {"name": "搜狗", "url": "https://www.sogou.com", "type": "中文", "priority": "中"}
         ],
-        "total": 3,
-        "strategy": "5秒快速响应策略 - 只使用中文搜索引擎",
+        "total": 2,
+        "strategy": "5秒快速响应策略 - 只使用百度、搜狗两个搜索引擎",
         "timeout_settings": {
             "total_timeout": "5.0秒",
             "single_request_timeout": "5.0秒",
-            "max_engines_used": 3
+            "max_engines_used": 2
         }
     }
 
 # 搜索接口
 @app.post("/search", response_model=SearchResponse)
 async def search_official_websites(request: SearchRequest):
-    """搜索官方网站 - 5秒快速响应策略，只使用中文搜索引擎"""
+    """搜索官方网站 - 5秒快速响应策略，只使用百度、搜狗两个搜索引擎"""
     try:
         print(f"🔍 收到搜索请求: {request.query}")
         
@@ -107,13 +106,13 @@ async def root():
     return {
         "message": "官方网站搜索引擎",
         "version": "1.0.0",
-        "description": "支持3个中文搜索引擎的实时官方网站搜索，采用5秒快速响应策略，真正的并行搜索",
-        "search_engines": ["百度", "搜狗", "360搜索"],
-        "strategy": "5秒快速响应策略 - 只使用中文搜索引擎",
+        "description": "支持2个中文搜索引擎的实时官方网站搜索，采用5秒快速响应策略，真正的并行搜索",
+        "search_engines": ["百度", "搜狗"],
+        "strategy": "5秒快速响应策略 - 只使用百度、搜狗两个搜索引擎",
         "timeout_settings": {
             "total_timeout": "5.0秒",
             "single_request_timeout": "5.0秒",
-            "max_engines_used": 3
+            "max_engines_used": 2
         },
         "docs": "/docs",
         "health": "/health",

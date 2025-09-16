@@ -9,11 +9,10 @@ load_dotenv()
 
 class RealtimeSearchService:
     def __init__(self):
-        # 只保留中文搜索引擎：百度、搜狗、360搜索
+        # 只保留百度、搜狗两个搜索引擎
         self.search_engines = {
             "baidu": os.getenv("BAIDU_SEARCH_URL", "https://www.baidu.com/s?wd="),
             "sogou": os.getenv("SOGOU_SEARCH_URL", "https://www.sogou.com/web?query="),
-            "360": os.getenv("360_SEARCH_URL", "https://www.so.com/s?q="),
         }
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
@@ -32,6 +31,7 @@ class RealtimeSearchService:
             response = await session.get(url, headers=self.headers, follow_redirects=True, timeout=5.0)
             response.raise_for_status()
             print(f"✅ {engine} 搜索完成，状态码: {response.status_code}")
+            # 使用response.text自动解压缩
             return response.text
         except httpx.RequestError as e:
             print(f"❌ {engine} 搜索失败: {e}")
@@ -115,35 +115,6 @@ class RealtimeSearchService:
                     if len(results) >= 10:
                         print(f"🔍 {engine} 达到结果数量限制，停止解析")
                         break
-                        
-        elif engine == "360":
-            # 360搜索结果解析 - 使用更通用的方法
-            print(f"🔍 {engine} 使用通用解析方法...")
-            
-            for div in soup.find_all('div'):
-                title_tag = div.find('h3') or div.find('h2') or div.find('a')
-                if not title_tag:
-                    continue
-                    
-                link_tag = div.find('a')
-                if not link_tag or not link_tag.get('href'):
-                    continue
-                    
-                title = title_tag.get_text().strip()
-                link = link_tag.get('href', '')
-                
-                if link.startswith('http'):
-                    snippet = ''
-                    snippet_tag = div.find('p') or div.find('span') or div.find('div')
-                    if snippet_tag:
-                        snippet = snippet_tag.get_text().strip()
-                    
-                    print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
-                    results.append({"title": title, "link": link, "snippet": snippet})
-                    
-                    if len(results) >= 10:
-                        print(f"🔍 {engine} 达到结果数量限制，停止解析")
-                        break
                     
         print(f"📊 {engine} 解析完成，共获得 {len(results)} 个结果")
         return results
@@ -184,14 +155,14 @@ class RealtimeSearchService:
         return False
 
     async def search(self, query: str, max_results: int = 10):
-        """执行实时搜索 - 5秒内返回结果，只使用中文搜索引擎"""
+        """执行实时搜索 - 5秒内返回结果，只使用百度、搜狗两个搜索引擎"""
         import time
         start_time = time.time()
         
         all_results = []
         successful_engines = []
         
-        print(f"🔍 开始搜索: '{query}'，使用中文搜索引擎: {list(self.search_engines.keys())}")
+        print(f"🔍 开始搜索: '{query}'，使用搜索引擎: {list(self.search_engines.keys())}")
         
         async with httpx.AsyncClient() as session:
             # 创建所有搜索任务 - 真正的并行启动
@@ -200,11 +171,11 @@ class RealtimeSearchService:
                 task = asyncio.create_task(self._fetch_results(session, engine, query))
                 tasks[engine] = task
             
-            print(f"🚀 并行启动 {len(tasks)} 个中文搜索引擎任务")
+            print(f"�� 并行启动 {len(tasks)} 个搜索引擎任务")
             
             # 使用 asyncio.as_completed 实现真正的并行等待
             completed_count = 0
-            max_engines = 3  # 最多使用3个引擎（全部）
+            max_engines = 2  # 最多使用2个引擎（全部）
             total_timeout = 5.0  # 总超时时间5.0秒
             
             try:
@@ -217,7 +188,7 @@ class RealtimeSearchService:
                         break
                     
                     if completed_count >= max_engines:
-                        print(f"🎯 已获得前3个引擎结果，取消剩余任务")
+                        print(f"🎯 已获得前2个引擎结果，取消剩余任务")
                         break
                     
                     try:
