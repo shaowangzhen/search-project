@@ -1,6 +1,6 @@
 <?php
 /**
- * 搜索引擎核心类 - 兼容file_get_contents版本
+ * 搜索引擎核心类 - 适配后端API格式
  */
 
 require_once __DIR__ . '/ApiClient.php';
@@ -59,13 +59,21 @@ class SearchEngine
         // 调用API搜索
         $response = $this->apiClient->search($query, $page, $limit, $category);
         
-        if (!$response['success']) {
+        // 检查API响应格式
+        if (isset($response['success']) && !$response['success']) {
+            // 处理错误响应格式
             $this->showError($response['error'] ?? '搜索失败');
             return;
         }
         
+        // 检查是否有results字段（正常响应格式）
+        if (!isset($response['results'])) {
+            $this->showError('搜索响应格式错误');
+            return;
+        }
+        
         // 显示搜索结果
-        $this->showSearchResults($response['data'], $query, $page, $limit);
+        $this->showSearchResults($response['results'], $query, $page, $limit);
     }
     
     /**
