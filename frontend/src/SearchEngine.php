@@ -56,7 +56,7 @@ class SearchEngine {
         <html lang="zh-CN">
         <head>
             <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
             <title>搜索结果 - 官网直达</title>
             <style>
                 * {
@@ -159,7 +159,7 @@ class SearchEngine {
                     transform: translateY(0);
                 }
                 
-                /* 响应式设计 - 与首页一致 */
+                /* 移动端优化 - 防止搜索框放大导致按钮溢出 */
                 @media (max-width: 768px) {
                     .header-content {
                         flex-direction: column;
@@ -176,18 +176,53 @@ class SearchEngine {
                     }
                     
                     .search-form {
-                        flex-direction: column;
+                        flex-direction: row; /* 保持水平布局 */
+                        min-height: 50px; /* 固定最小高度 */
                     }
                     
                     .search-input {
                         padding: 12px 15px;
-                        font-size: 16px;
+                        font-size: 16px; /* 使用16px防止iOS自动缩放 */
+                        min-height: 50px; /* 固定高度 */
                     }
                     
                     .search-btn {
                         padding: 12px 20px;
                         font-size: 16px;
-                        min-width: auto;
+                        min-width: 80px; /* 减少最小宽度 */
+                        flex-shrink: 0; /* 防止按钮被压缩 */
+                    }
+                }
+                
+                /* 超小屏幕优化 */
+                @media (max-width: 480px) {
+                    .header {
+                        padding: 10px 0;
+                    }
+                    
+                    .header-content {
+                        padding: 0 10px;
+                        gap: 10px;
+                    }
+                    
+                    .logo {
+                        font-size: 24px;
+                    }
+                    
+                    .search-form {
+                        min-height: 45px;
+                    }
+                    
+                    .search-input {
+                        padding: 10px 12px;
+                        font-size: 16px;
+                        min-height: 45px;
+                    }
+                    
+                    .search-btn {
+                        padding: 10px 15px;
+                        font-size: 14px;
+                        min-width: 70px;
                     }
                 }
                 
@@ -435,7 +470,7 @@ class SearchEngine {
                                     </a>
                                 </div>
                                 <div class="result-url">
-                                    <div class="url-icon">🔗</div>
+                                    <div class="url-icon">��</div>
                                     <span><?php echo htmlspecialchars($result['url']); ?></span>
                                 </div>
                                 <div class="result-snippet">
