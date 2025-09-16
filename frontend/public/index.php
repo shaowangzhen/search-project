@@ -710,10 +710,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             
             <div class="column" id="entertainment">
                 <div class="column-title">
-                    <span>��</span>
+                    <span>🎬</span>
                     <span>娱乐休闲</span>
                 </div>
                 <ul class="link-list">
+                    <li><a href="https://www.bilibili.com" target="_blank">哔哩哔哩</a></li>
+                    <li><a href="https://www.iqiyi.com" target="_blank">爱奇艺</a></li>
+                    <li><a href="https://www.youku.com" target="_blank">优酷</a></li>
+                    <li><a href="https://v.qq.com" target="_blank">腾讯视频</a></li>
+                    <li><a href="https://www.mgtv.com" target="_blank">芒果TV</a></li>
+                    <li><a href="https://www.douyin.com" target="_blank">抖音</a></li>
+                    <li><a href="https://www.kuaishou.com" target="_blank">快手</a></li>
+                    <li><a href="https://www.xiaohongshu.com" target="_blank">小红书</a></li>
+                    <li><a href="https://www.zhihu.com" target="_blank">知乎</a></li>
+                    <li><a href="https://www.douban.com" target="_blank">豆瓣</a></li>
+                    <li><a href="https://www.weibo.com" target="_blank">微博</a></li>
+                    <li><a href="https://www.toutiao.com" target="_blank">今日头条</a></li>
+                    <li><a href="https://music.163.com" target="_blank">网易云音乐</a></li>
+                    <li><a href="https://music.qq.com" target="_blank">QQ音乐</a></li>
+                    <li><a href="https://www.kugou.com" target="_blank">酷狗音乐</a></li>
+                    <li><a href="https://www.kuwo.cn" target="_blank">酷我音乐</a></li>
+                    <li><a href="https://www.ximalaya.com" target="_blank">喜马拉雅</a></li>
+                    <li><a href="https://www.lizhi.fm" target="_blank">荔枝FM</a></li>
+                    <li><a href="https://www.huya.com" target="_blank">虎牙直播</a></li>
+                    <li><a href="https://www.douyu.com" target="_blank">斗鱼直播</a></li>
+                </ul>
+            </div>                <ul class="link-list">
                     <li><a href="https://www.bilibili.com" target="_blank">哔哩哔哩</a></li>
                     <li><a href="https://www.iqiyi.com" target="_blank">爱奇艺</a></li>
                     <li><a href="https://www.youku.com" target="_blank">优酷</a></li>
