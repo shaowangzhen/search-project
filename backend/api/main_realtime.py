@@ -1,29 +1,24 @@
-"""
-最终版实时搜索API - Python 3.7兼容
-去掉所有有问题的依赖，确保在Python 3.7环境下能正常运行
-"""
-
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Dict, Any, Optional
+from typing import List, Optional, Dict, Any
 import asyncio
 import sys
 import os
 
-# 添加服务路径
-sys.path.append(os.path.join(os.path.dirname(__file__), 'services'))
+# 确保可以导入同级目录的服务
+sys.path.append(os.path.dirname(__file__))
 
-from realtime_search_service_final import FinalRealtimeSearchService
+from services.realtime_search_service import RealtimeSearchService
 
-# 创建FastAPI应用
 app = FastAPI(
-    title="官方网站搜索引擎 - 最终版",
-    description="实时搜索官方网站，Python 3.7兼容版本",
-    version="1.0.0"
+    title="官方网站搜索引擎 API",
+    description="一个实时搜索官方网站的API，支持多搜索引擎聚合和基础的官方网站识别。",
+    version="1.0.0",
 )
 
-# 添加CORS中间件
+# 添加CORS支持
+from fastapi.middleware.cors import CORSMiddleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,7 +28,7 @@ app.add_middleware(
 )
 
 # 创建搜索服务实例
-search_service = FinalRealtimeSearchService()
+search_service = RealtimeSearchService()
 
 # 请求模型
 class SearchRequest(BaseModel):
@@ -78,7 +73,7 @@ async def search_official_websites(request: SearchRequest):
 async def root():
     """根路径"""
     return {
-        "message": "官方网站搜索引擎 - 最终版",
+        "message": "官方网站搜索引擎",
         "version": "1.0.0",
         "docs": "/docs",
         "health": "/health"

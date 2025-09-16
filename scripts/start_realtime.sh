@@ -1,7 +1,7 @@
 #!/bin/bash
-# 启动实时搜索后端服务 - 最终版 (Python 3.7兼容)
+# 启动官方网站搜索引擎 - 实时搜索版
 
-echo "🚀 启动官方网站搜索引擎后端服务 - 最终版 (Python 3.7兼容)"
+echo "🚀 启动官方网站搜索引擎 - 实时搜索版"
 
 # 检查Python环境
 if ! command -v python3 &> /dev/null; then
@@ -16,6 +16,12 @@ echo "🐍 检测到Python版本: $PYTHON_VERSION"
 if [[ "$PYTHON_VERSION" < "3.7" ]]; then
     echo "❌ 需要Python 3.7或更高版本，当前版本: $PYTHON_VERSION"
     exit 1
+fi
+
+# 检查PHP环境
+if ! command -v php &> /dev/null; then
+    echo "⚠️ PHP 未安装，前端服务将无法启动。但后端服务仍可运行。"
+    # exit 1 # 不再强制退出，允许只启动后端
 fi
 
 # 进入后端目录
@@ -36,16 +42,18 @@ echo "📦 升级pip..."
 pip install --upgrade pip
 
 # 安装依赖
-echo "📥 安装Python依赖 (最终版 - Python 3.7兼容)..."
-pip install -r requirements_python37_final.txt
+echo "📥 安装Python依赖 (实时搜索版)..."
+pip install -r requirements_realtime.txt
 
 # 启动后端服务
 echo "🐍 启动Python后端服务..."
-python -m uvicorn api.main_realtime_final:app --host 0.0.0.0 --port 8000 --reload &
+python -m uvicorn api.main_realtime:app --host 0.0.0.0 --port 8000 --reload &
 BACKEND_PID=$!
 
-# 等待后端启动 - 增加等待时间并循环检查
+# 等待后端启动
 echo "⏳ 等待后端服务启动..."
+
+# 循环检查端口状态，最多等待30秒 (15次 * 2秒)
 for i in {1..15}; do
     sleep 2
     if netstat -tuln 2>/dev/null | grep -q ":8000 "; then
@@ -61,18 +69,9 @@ for i in {1..15}; do
 done
 
 echo ""
-echo "🎉 官方网站搜索引擎后端服务启动完成！"
-echo ""
-echo "📱 访问地址:"
-echo "   后端API: http://localhost:8000"
-echo "   API文档: http://localhost:8000/docs"
-echo "   健康检查: http://localhost:8000/health"
-echo ""
-echo "🔧 管理命令:"
-echo "   停止服务: kill $BACKEND_PID"
-echo "   查看日志: 查看终端输出"
-echo ""
-echo "💡 提示: 按 Ctrl+C 停止服务"
+echo "🌐 后端API服务已在 http://localhost:8000 运行"
+echo "📚 API文档可在 http://localhost:8000/docs 查看"
+echo "💡 按 Ctrl+C 停止所有服务"
 
-# 等待用户中断
-wait
+# 保持脚本运行，直到接收到中断信号
+wait $BACKEND_PID
