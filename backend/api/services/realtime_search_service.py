@@ -23,7 +23,7 @@ class RealtimeSearchService:
     async def _fetch_results(self, session: httpx.AsyncClient, engine: str, query: str):
         url = self.search_engines.get(engine) + query
         try:
-            print(f"🚀 并行启动 {engine} 搜索: {url}")
+            print(f"🚀 启动 {engine} 搜索")
             # 单个请求超时时间1.5秒
             response = await session.get(url, headers=self.headers, follow_redirects=True, timeout=1.5)
             response.raise_for_status()
@@ -44,33 +44,37 @@ class RealtimeSearchService:
         results = []
 
         if engine == "google":
+            # Google搜索结果解析
             for g in soup.find_all('div', class_='tF2CMy'):
                 title_tag = g.find('h3')
                 link_tag = g.find('a')
                 snippet_tag = g.find('div', class_='VwiC3b')
 
-                title = title_tag.get_text() if title_tag else "No Title"
-                link = link_tag['href'] if link_tag else "No Link"
-                snippet = snippet_tag.get_text() if snippet_tag else "No Snippet"
-                results.append({"title": title, "link": link, "snippet": snippet})
-                
+                if title_tag and link_tag:
+                    title = title_tag.get_text().strip()
+                    link = link_tag.get('href', '')
+                    snippet = snippet_tag.get_text().strip() if snippet_tag else ''
+                    results.append({"title": title, "link": link, "snippet": snippet})
+                    
         elif engine == "bing":
+            # Bing搜索结果解析
             for b in soup.find_all('li', class_='b_algo'):
                 title_tag = b.find('h2')
                 link_tag = b.find('a')
                 snippet_tag = b.find('p')
 
-                title = title_tag.get_text() if title_tag else "No Title"
-                link = link_tag['href'] if link_tag else "No Link"
-                snippet = snippet_tag.get_text() if snippet_tag else "No Snippet"
-                results.append({"title": title, "link": link, "snippet": snippet})
-                
+                if title_tag and link_tag:
+                    title = title_tag.get_text().strip()
+                    link = link_tag.get('href', '')
+                    snippet = snippet_tag.get_text().strip() if snippet_tag else ''
+                    results.append({"title": title, "link": link, "snippet": snippet})
+                    
         elif engine == "baidu":
-            # 百度搜索结果解析
+            # 百度搜索结果解析 - 修复解析逻辑
             for result in soup.find_all('div', class_='result'):
                 title_tag = result.find('h3')
                 link_tag = result.find('a')
-                snippet_tag = result.find('span', class_='content-right_8Zs40')
+                snippet_tag = result.find('span', class_='content-right_8Zs40') or result.find('div', class_='c-abstract')
 
                 if title_tag and link_tag:
                     title = title_tag.get_text().strip()
@@ -79,9 +83,8 @@ class RealtimeSearchService:
                     
                     # 处理百度重定向链接
                     if link.startswith('/link?url='):
-                        # 提取真实URL
-                        import urllib.parse
                         try:
+                            import urllib.parse
                             decoded_url = urllib.parse.unquote(link.split('url=')[1].split('&')[0])
                             link = decoded_url
                         except:
@@ -115,6 +118,7 @@ class RealtimeSearchService:
                     snippet = snippet_tag.get_text().strip() if snippet_tag else ''
                     results.append({"title": title, "link": link, "snippet": snippet})
                     
+        print(f"📊 {engine} 解析到 {len(results)} 个结果")
         return results
 
     def _is_official_website(self, link: str, query: str) -> bool:
@@ -165,30 +169,27 @@ class RealtimeSearchService:
             
             print(f"🚀 并行启动 {len(tasks)} 个搜索引擎任务")
             
-            # 等待前3个成功的响应，总超时时间2.5秒
+            # 使用 asyncio.as_completed 实现真正的并行等待
             completed_count = 0
             max_engines = 3
-            total_timeout = 2.5  # 总超时时间2.5秒
+            total_timeout = 2.0  # 总超时时间2.0秒
             
-            # 使用 asyncio.wait 实现真正的并行等待
-            pending_tasks = set(tasks.values())
-            completed_tasks = set()
-            
-            while pending_tasks and completed_count < max_engines:
-                # 检查总时间是否超时
-                if time.time() - start_time > total_timeout:
-                    print(f"⏰ 总搜索时间超过 {total_timeout} 秒，停止等待")
-                    break
-                
-                try:
-                    # 等待任意一个任务完成，超时时间1秒
-                    done, pending_tasks = await asyncio.wait(
-                        pending_tasks, 
-                        return_when=asyncio.FIRST_COMPLETED,
-                        timeout=1.0
-                    )
+            try:
+                # 使用 asyncio.as_completed 实现真正的并行处理
+                for task in asyncio.as_completed(tasks.values(), timeout=total_timeout):
+                    # 检查总时间是否超时
+                    elapsed = time.time() - start_time
+                    if elapsed > total_timeout:
+                        print(f"⏰ 总搜索时间超过 {total_timeout} 秒，停止等待")
+                        break
                     
-                    for task in done:
+                    if completed_count >= max_engines:
+                        print(f"🎯 已获得前3个引擎结果，取消剩余任务")
+                        break
+                    
+                    try:
+                        response_text = await task
+                        
                         # 找到对应的引擎名称
                         engine_name = None
                         for eng, t in tasks.items():
@@ -196,43 +197,33 @@ class RealtimeSearchService:
                                 engine_name = eng
                                 break
                         
-                        if engine_name:
-                            try:
-                                response_text = await task
-                                if response_text:
-                                    parsed_results = self._parse_results(response_text, engine_name)
-                                    all_results.extend(parsed_results)
-                                    successful_engines.append(engine_name)
-                                    completed_count += 1
-                                    elapsed = time.time() - start_time
-                                    print(f"✅ {engine_name} 搜索完成，获得 {len(parsed_results)} 个结果，耗时 {elapsed:.2f}s")
-                                    
-                                    # 如果已经获得3个引擎的结果，取消剩余任务
-                                    if completed_count >= max_engines:
-                                        print(f"🎯 已获得前3个引擎结果，取消剩余任务")
-                                        for remaining_task in pending_tasks:
-                                            remaining_task.cancel()
-                                        break
-                                else:
-                                    print(f"❌ {engine_name} 未返回有效结果")
-                            except Exception as e:
-                                print(f"❌ {engine_name} 处理结果失败: {e}")
+                        if engine_name and response_text:
+                            parsed_results = self._parse_results(response_text, engine_name)
+                            all_results.extend(parsed_results)
+                            successful_engines.append(engine_name)
+                            completed_count += 1
+                            elapsed = time.time() - start_time
+                            print(f"✅ {engine_name} 搜索完成，获得 {len(parsed_results)} 个结果，耗时 {elapsed:.2f}s")
+                        else:
+                            print(f"❌ {engine_name} 未返回有效结果")
+                            
+                    except asyncio.TimeoutError:
+                        elapsed = time.time() - start_time
+                        print(f"⏰ 任务超时，总耗时 {elapsed:.2f}s")
+                        break
+                    except Exception as e:
+                        print(f"❌ 任务处理失败: {e}")
+                        continue
                         
-                        completed_tasks.add(task)
-                        
-                except asyncio.TimeoutError:
-                    elapsed = time.time() - start_time
-                    print(f"⏰ 等待任务完成超时，总耗时 {elapsed:.2f}s")
-                    break
-                except Exception as e:
-                    print(f"❌ 并行搜索过程出错: {e}")
-                    break
+            except asyncio.TimeoutError:
+                elapsed = time.time() - start_time
+                print(f"⏰ 总搜索超时，总耗时 {elapsed:.2f}s")
             
             # 取消所有剩余任务
-            for task in pending_tasks:
+            for engine, task in tasks.items():
                 if not task.done():
                     task.cancel()
-                    print(f"❌ 取消剩余任务")
+                    print(f"❌ 取消 {engine} 任务")
 
         total_elapsed = time.time() - start_time
         print(f"📊 搜索完成统计: 成功 {len(successful_engines)} 个引擎: {', '.join(successful_engines)}，总耗时 {total_elapsed:.2f}s")
@@ -249,6 +240,8 @@ class RealtimeSearchService:
                 })
                 if len(official_results) >= max_results:
                     break
+
+        print(f"🎯 官方网站过滤: 从 {len(all_results)} 个结果中筛选出 {len(official_results)} 个官方网站")
 
         return {
             'query': query,
