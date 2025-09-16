@@ -12,7 +12,7 @@ from services.realtime_search_service import RealtimeSearchService
 
 app = FastAPI(
     title="官方网站搜索引擎 API",
-    description="一个实时搜索官方网站的API，支持6个搜索引擎，采用快速响应策略：只取前3个最快响应的搜索引擎结果。",
+    description="一个实时搜索官方网站的API，支持6个搜索引擎，采用3秒快速响应策略：总超时2.5秒，单个请求1.5秒。",
     version="1.0.0",
 )
 
@@ -52,8 +52,12 @@ async def health_check():
         "version": "1.0.0",
         "search_engines": ["Google", "Bing", "DuckDuckGo", "百度", "搜狗", "360搜索"],
         "total_engines": 6,
-        "strategy": "快速响应 - 只取前3个最快响应的搜索引擎结果",
-        "timeout": "8秒"
+        "strategy": "3秒快速响应策略",
+        "timeout_settings": {
+            "total_timeout": "2.5秒",
+            "single_request_timeout": "1.5秒",
+            "max_engines_used": 3
+        }
     }
 
 # 搜索引擎信息
@@ -70,15 +74,18 @@ async def get_search_engines():
             {"name": "360搜索", "url": "https://www.so.com", "type": "中文", "priority": "中"}
         ],
         "total": 6,
-        "strategy": "快速响应策略",
-        "max_engines_used": 3,
-        "timeout": "8秒"
+        "strategy": "3秒快速响应策略",
+        "timeout_settings": {
+            "total_timeout": "2.5秒",
+            "single_request_timeout": "1.5秒",
+            "max_engines_used": 3
+        }
     }
 
 # 搜索接口
 @app.post("/search", response_model=SearchResponse)
 async def search_official_websites(request: SearchRequest):
-    """搜索官方网站 - 快速响应策略"""
+    """搜索官方网站 - 3秒快速响应策略"""
     try:
         print(f"收到搜索请求: {request.query}")
         
@@ -88,7 +95,7 @@ async def search_official_websites(request: SearchRequest):
             max_results=request.max_results
         )
         
-        print(f"搜索完成，返回 {results['total_results']} 个结果，使用了 {results['engines_count']} 个搜索引擎")
+        print(f"搜索完成，返回 {results['total_results']} 个结果，使用了 {results['engines_count']} 个搜索引擎，耗时 {results['search_time']}")
         
         return SearchResponse(**results)
         
@@ -103,10 +110,14 @@ async def root():
     return {
         "message": "官方网站搜索引擎",
         "version": "1.0.0",
-        "description": "支持6个搜索引擎的实时官方网站搜索，采用快速响应策略",
+        "description": "支持6个搜索引擎的实时官方网站搜索，采用3秒快速响应策略",
         "search_engines": ["Google", "Bing", "DuckDuckGo", "百度", "搜狗", "360搜索"],
-        "strategy": "只取前3个最快响应的搜索引擎结果",
-        "timeout": "8秒",
+        "strategy": "3秒快速响应策略 - 总超时2.5秒，单个请求1.5秒",
+        "timeout_settings": {
+            "total_timeout": "2.5秒",
+            "single_request_timeout": "1.5秒",
+            "max_engines_used": 3
+        },
         "docs": "/docs",
         "health": "/health",
         "engines": "/engines"

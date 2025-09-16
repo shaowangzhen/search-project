@@ -25,7 +25,8 @@ class RealtimeSearchService:
         url = self.search_engines.get(engine) + query
         try:
             print(f"Fetching from {engine}: {url}")
-            response = await session.get(url, headers=self.headers, follow_redirects=True, timeout=8)
+            # 单个请求超时时间调整为3秒
+            response = await session.get(url, headers=self.headers, follow_redirects=True, timeout=3)
             response.raise_for_status()
             return response.text
         except httpx.RequestError as e:
@@ -156,7 +157,10 @@ class RealtimeSearchService:
         return False
 
     async def search(self, query: str, max_results: int = 10):
-        """执行实时搜索 - 只取前3个最快响应的搜索引擎"""
+        """执行实时搜索 - 3秒内返回结果"""
+        import time
+        start_time = time.time()
+        
         all_results = []
         successful_engines = []
         
@@ -167,39 +171,53 @@ class RealtimeSearchService:
                 task = asyncio.create_task(self._fetch_results(session, engine, query))
                 tasks.append((engine, task))
             
-            # 等待前3个成功的响应
+            # 等待前3个成功的响应，总超时时间2.5秒
             completed_count = 0
             max_engines = 3
+            total_timeout = 2.5  # 总超时时间2.5秒
             
-            for engine, task in tasks:
-                try:
-                    # 等待单个任务完成，超时时间8秒
-                    response_text = await asyncio.wait_for(task, timeout=8)
-                    if response_text:
-                        parsed_results = self._parse_results(response_text, engine)
-                        all_results.extend(parsed_results)
-                        successful_engines.append(engine)
-                        completed_count += 1
-                        print(f"✅ {engine} 搜索完成，获得 {len(parsed_results)} 个结果")
-                        
-                        # 如果已经获得3个引擎的结果，取消剩余任务
-                        if completed_count >= max_engines:
-                            print(f"🎯 已获得前3个引擎结果，取消剩余任务")
-                            # 取消未完成的任务
-                            for remaining_engine, remaining_task in tasks[completed_count:]:
-                                if not remaining_task.done():
-                                    remaining_task.cancel()
-                                    print(f"❌ 取消 {remaining_engine} 搜索任务")
-                            break
+            try:
+                for engine, task in tasks:
+                    # 检查总时间是否超时
+                    if time.time() - start_time > total_timeout:
+                        print(f"⏰ 总搜索时间超过 {total_timeout} 秒，停止等待")
+                        break
+                    
+                    try:
+                        # 单个任务超时时间1.5秒
+                        response_text = await asyncio.wait_for(task, timeout=1.5)
+                        if response_text:
+                            parsed_results = self._parse_results(response_text, engine)
+                            all_results.extend(parsed_results)
+                            successful_engines.append(engine)
+                            completed_count += 1
+                            elapsed = time.time() - start_time
+                            print(f"✅ {engine} 搜索完成，获得 {len(parsed_results)} 个结果，耗时 {elapsed:.2f}s")
                             
-                except asyncio.TimeoutError:
-                    print(f"⏰ {engine} 搜索超时，跳过")
-                    continue
-                except Exception as e:
-                    print(f"❌ {engine} 搜索失败: {e}")
-                    continue
+                            # 如果已经获得3个引擎的结果，取消剩余任务
+                            if completed_count >= max_engines:
+                                print(f"🎯 已获得前3个引擎结果，取消剩余任务")
+                                # 取消未完成的任务
+                                for remaining_engine, remaining_task in tasks[completed_count:]:
+                                    if not remaining_task.done():
+                                        remaining_task.cancel()
+                                        print(f"❌ 取消 {remaining_engine} 搜索任务")
+                                break
+                                
+                    except asyncio.TimeoutError:
+                        elapsed = time.time() - start_time
+                        print(f"⏰ {engine} 搜索超时 (1.5s)，跳过，总耗时 {elapsed:.2f}s")
+                        continue
+                    except Exception as e:
+                        elapsed = time.time() - start_time
+                        print(f"❌ {engine} 搜索失败: {e}，总耗时 {elapsed:.2f}s")
+                        continue
+                        
+            except Exception as e:
+                print(f"❌ 搜索过程出错: {e}")
 
-        print(f"📊 搜索完成统计: 成功 {len(successful_engines)} 个引擎: {', '.join(successful_engines)}")
+        total_elapsed = time.time() - start_time
+        print(f"📊 搜索完成统计: 成功 {len(successful_engines)} 个引擎: {', '.join(successful_engines)}，总耗时 {total_elapsed:.2f}s")
 
         # 过滤官方网站
         official_results = []
@@ -218,7 +236,7 @@ class RealtimeSearchService:
             'query': query,
             'total_results': len(official_results),
             'results': official_results,
-            'search_time': '实时搜索',
+            'search_time': f'{total_elapsed:.2f}s',
             'engines_used': successful_engines,
             'engines_count': len(successful_engines)
         }

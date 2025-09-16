@@ -3,8 +3,9 @@
 
 echo "🚀 启动官方网站搜索引擎 - 实时搜索版"
 echo "🔍 支持搜索引擎: Google, Bing, DuckDuckGo, 百度, 搜狗, 360搜索"
-echo "⚡ 搜索策略: 快速响应 - 只取前3个最快响应的搜索引擎结果"
-echo "⏱️ 超时设置: 8秒"
+echo "⚡ 搜索策略: 3秒快速响应策略"
+echo "⏱️ 超时设置: 总超时2.5秒，单个请求1.5秒"
+echo "🎯 目标: 整体搜索结果返回不超过3秒"
 
 # 检查Python环境
 if ! command -v python3 &> /dev/null; then
@@ -45,7 +46,7 @@ echo "📦 升级pip..."
 pip install --upgrade pip
 
 # 安装依赖
-echo "📥 安装Python依赖 (实时搜索版 - 快速响应策略)..."
+echo "📥 安装Python依赖 (实时搜索版 - 3秒快速响应策略)..."
 pip install -r requirements_realtime.txt
 
 # 启动后端服务
@@ -75,8 +76,9 @@ echo ""
 echo "🌐 后端API服务已在 http://localhost:8000 运行"
 echo "📚 API文档可在 http://localhost:8000/docs 查看"
 echo "🔍 支持搜索引擎: Google, Bing, DuckDuckGo, 百度, 搜狗, 360搜索"
-echo "⚡ 搜索策略: 快速响应 - 只取前3个最快响应的搜索引擎结果"
-echo "⏱️ 超时设置: 8秒"
+echo "⚡ 搜索策略: 3秒快速响应策略"
+echo "⏱️ 超时设置: 总超时2.5秒，单个请求1.5秒"
+echo "🎯 目标: 整体搜索结果返回不超过3秒"
 echo "💡 按 Ctrl+C 停止所有服务"
 
 # 保持脚本运行，直到接收到中断信号
