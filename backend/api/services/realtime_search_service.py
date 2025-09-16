@@ -52,12 +52,13 @@ class RealtimeSearchService:
         results = []
 
         if engine == "google":
-            # Google搜索结果解析 - 多种选择器
+            # Google搜索结果解析 - 多种选择器备选
             selectors = [
                 'div.tF2CMy',
                 'div.g',
                 'div[data-ved]',
-                'div.rc'
+                'div.rc',
+                'div[jscontroller]'
             ]
             
             for selector in selectors:
@@ -82,11 +83,12 @@ class RealtimeSearchService:
                         results.append({"title": title, "link": link, "snippet": snippet})
                         
         elif engine == "bing":
-            # Bing搜索结果解析 - 多种选择器
+            # Bing搜索结果解析 - 多种选择器备选
             selectors = [
                 'li.b_algo',
                 'div.b_algo',
-                'li[data-bm]'
+                'li[data-bm]',
+                'div[data-bm]'
             ]
             
             for selector in selectors:
@@ -102,18 +104,20 @@ class RealtimeSearchService:
                         results.append({"title": title, "link": link, "snippet": snippet})
                         
         elif engine == "baidu":
-            # 百度搜索结果解析 - 多种选择器
+            # 百度搜索结果解析 - 多种选择器备选
             selectors = [
                 'div.result',
                 'div[data-log]',
-                'div.c-container'
+                'div.c-container',
+                'div[mu]',
+                'div[data-click]'
             ]
             
             for selector in selectors:
                 for result in soup.select(selector):
                     title_tag = result.find('h3') or result.find('h2')
                     link_tag = result.find('a')
-                    snippet_tag = result.find('span', class_='content-right_8Zs40') or result.find('div', class_='c-abstract') or result.find('span', class_='c-color-text')
+                    snippet_tag = result.find('span', class_='content-right_8Zs40') or result.find('div', class_='c-abstract') or result.find('span', class_='c-color-text') or result.find('div', class_='c-span')
 
                     if title_tag and link_tag:
                         title = title_tag.get_text().strip()
@@ -130,13 +134,37 @@ class RealtimeSearchService:
                                 continue
                         
                         results.append({"title": title, "link": link, "snippet": snippet})
+            
+            # 如果上面的选择器都没有找到结果，尝试更通用的方法
+            if not results:
+                print(f"🔍 {engine} 使用通用解析方法")
+                for result in soup.find_all('div'):
+                    title_tag = result.find('h3') or result.find('h2')
+                    link_tag = result.find('a')
+                    
+                    if title_tag and link_tag and link_tag.get('href'):
+                        title = title_tag.get_text().strip()
+                        link = link_tag.get('href', '')
+                        
+                        # 只处理包含http的链接
+                        if link.startswith('http'):
+                            snippet = ''
+                            snippet_tag = result.find('span') or result.find('div')
+                            if snippet_tag:
+                                snippet = snippet_tag.get_text().strip()
+                            
+                            results.append({"title": title, "link": link, "snippet": snippet})
+                            
+                            if len(results) >= 10:  # 限制结果数量
+                                break
                         
         elif engine == "sogou":
-            # 搜狗搜索结果解析 - 多种选择器
+            # 搜狗搜索结果解析 - 多种选择器备选
             selectors = [
                 'div.result',
                 'div[data-log]',
-                'div.vrwrap'
+                'div.vrwrap',
+                'div[mu]'
             ]
             
             for selector in selectors:
@@ -152,11 +180,12 @@ class RealtimeSearchService:
                         results.append({"title": title, "link": link, "snippet": snippet})
                         
         elif engine == "360":
-            # 360搜索结果解析 - 多种选择器
+            # 360搜索结果解析 - 多种选择器备选
             selectors = [
                 'li.res-list',
                 'div.res-list',
-                'li[data-log]'
+                'li[data-log]',
+                'div[data-log]'
             ]
             
             for selector in selectors:
@@ -171,7 +200,7 @@ class RealtimeSearchService:
                         snippet = snippet_tag.get_text().strip() if snippet_tag else ''
                         results.append({"title": title, "link": link, "snippet": snippet})
                     
-        print(f"📊 {engine} 解析到 {len(results)} 个结果")
+        print(f"�� {engine} 解析到 {len(results)} 个结果")
         return results
 
     def _is_official_website(self, link: str, query: str) -> bool:
