@@ -10,17 +10,24 @@ load_dotenv()
 
 class RealtimeSearchService:
     def __init__(self):
-        # 只保留搜狗搜索引擎，百度有反爬虫机制
+        # 添加百度、搜狗、360三个搜索引擎
         self.search_engines = {
+            "baidu": os.getenv("BAIDU_SEARCH_URL", "https://www.baidu.com/s?wd="),
             "sogou": os.getenv("SOGOU_SEARCH_URL", "https://www.sogou.com/web?query="),
+            "360": os.getenv("360_SEARCH_URL", "https://www.so.com/s?q="),
         }
         self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
             "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
             "Accept-Encoding": "gzip, deflate, br",
             "Connection": "keep-alive",
             "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
+            "Cache-Control": "max-age=0",
         }
 
     async def _fetch_results(self, session: httpx.AsyncClient, engine: str, query: str):
@@ -55,9 +62,39 @@ class RealtimeSearchService:
         
         print(f"🔍 {engine} 开始解析HTML内容，长度: {len(html_content)} 字符")
 
-        if engine == "sogou":
-            # 搜狗搜索结果解析 - 使用更通用的方法
-            print(f"🔍 {engine} 使用通用解析方法...")
+        if engine == "baidu":
+            # 百度搜索结果解析
+            print(f"🔍 {engine} 使用百度解析方法...")
+            
+            # 百度搜索结果通常在 .result 或 .c-container 中
+            for result_div in soup.find_all(['div'], class_=re.compile(r'result|c-container')):
+                title_tag = result_div.find('h3') or result_div.find('a')
+                if not title_tag:
+                    continue
+                    
+                link_tag = result_div.find('a', href=True)
+                if not link_tag or not link_tag.get('href'):
+                    continue
+                    
+                title = title_tag.get_text().strip()
+                link = link_tag.get('href', '')
+                
+                if link.startswith('http'):
+                    snippet = ''
+                    snippet_tag = result_div.find('span', class_=re.compile(r'content-right|abstract'))
+                    if snippet_tag:
+                        snippet = snippet_tag.get_text().strip()
+                    
+                    print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
+                    results.append({"title": title, "link": link, "snippet": snippet})
+                    
+                    if len(results) >= 10:  # 限制每个引擎最多10个结果
+                        print(f"🔍 {engine} 达到结果数量限制，停止解析")
+                        break
+                        
+        elif engine == "sogou":
+            # 搜狗搜索结果解析
+            print(f"🔍 {engine} 使用搜狗解析方法...")
             
             for div in soup.find_all('div'):
                 title_tag = div.find('h3') or div.find('h2') or div.find('a')
@@ -80,7 +117,37 @@ class RealtimeSearchService:
                     print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
                     results.append({"title": title, "link": link, "snippet": snippet})
                     
-                    if len(results) >= 15:  # 增加结果数量限制
+                    if len(results) >= 10:  # 限制每个引擎最多10个结果
+                        print(f"🔍 {engine} 达到结果数量限制，停止解析")
+                        break
+                        
+        elif engine == "360":
+            # 360搜索结果解析
+            print(f"🔍 {engine} 使用360解析方法...")
+            
+            # 360搜索结果通常在 .result 或 .res-list 中
+            for result_div in soup.find_all(['div'], class_=re.compile(r'result|res-list')):
+                title_tag = result_div.find('h3') or result_div.find('a')
+                if not title_tag:
+                    continue
+                    
+                link_tag = result_div.find('a', href=True)
+                if not link_tag or not link_tag.get('href'):
+                    continue
+                    
+                title = title_tag.get_text().strip()
+                link = link_tag.get('href', '')
+                
+                if link.startswith('http'):
+                    snippet = ''
+                    snippet_tag = result_div.find('p') or result_div.find('span', class_=re.compile(r'abstract|summary'))
+                    if snippet_tag:
+                        snippet = snippet_tag.get_text().strip()
+                    
+                    print(f"�� {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
+                    results.append({"title": title, "link": link, "snippet": snippet})
+                    
+                    if len(results) >= 10:  # 限制每个引擎最多10个结果
                         print(f"🔍 {engine} 达到结果数量限制，停止解析")
                         break
                     
@@ -144,7 +211,7 @@ class RealtimeSearchService:
         query_parts = re.split(r'\s+', query.lower())
         for part in query_parts:
             if part and part in domain:
-                print(f"    🎯 官方网站匹配: 查询词 '{part}' 匹配域名 '{domain}'")
+                print(f"    �� 官方网站匹配: 查询词 '{part}' 匹配域名 '{domain}'")
                 return True
             
             # 检查中文到英文的映射
@@ -173,14 +240,38 @@ class RealtimeSearchService:
                 print(f"    🎯 官方网站匹配: 中文关键词 '{keyword}' 匹配域名 '{domain}'")
                 return True
 
-        # 放宽条件：如果查询词在标题中出现，也认为是官方网站
-        # 这里我们需要从外部传入标题，暂时跳过
-
         print(f"    ❌ 未识别为官方网站")
         return False
 
+    def _merge_and_rank_results(self, all_results: list, query: str) -> list:
+        """合并和排序搜索结果"""
+        print(f"🔄 开始合并和排序 {len(all_results)} 个原始结果")
+        
+        # 去重：基于URL去重
+        seen_urls = set()
+        unique_results = []
+        for result in all_results:
+            url = result.get('link', '')
+            if url and url not in seen_urls:
+                seen_urls.add(url)
+                unique_results.append(result)
+        
+        print(f"🔄 去重后剩余 {len(unique_results)} 个结果")
+        
+        # 按来源优先级排序：搜狗 > 360 > 百度
+        source_priority = {'sogou': 1, '360': 2, 'baidu': 3}
+        
+        def sort_key(result):
+            source = result.get('source', '')
+            return source_priority.get(source, 999)
+        
+        unique_results.sort(key=sort_key)
+        print(f"🔄 按来源优先级排序完成")
+        
+        return unique_results
+
     async def search(self, query: str, max_results: int = 10):
-        """执行实时搜索 - 5秒内返回结果，只使用搜狗搜索引擎"""
+        """执行实时搜索 - 5秒内返回结果，使用百度、搜狗、360三个搜索引擎"""
         import time
         start_time = time.time()
         
@@ -198,7 +289,7 @@ class RealtimeSearchService:
             
             print(f"🚀 并行启动 {len(tasks)} 个搜索引擎任务")
             
-            # 修复：使用 asyncio.wait 而不是 asyncio.as_completed
+            # 使用 asyncio.wait 等待所有任务完成
             try:
                 # 等待所有任务完成，但设置超时
                 done, pending = await asyncio.wait(tasks.values(), timeout=5.0, return_when=asyncio.ALL_COMPLETED)
@@ -222,8 +313,12 @@ class RealtimeSearchService:
                                 print(f"📊 {engine_name} 解析完成，获得 {len(parsed_results)} 个原始结果")
                                 
                                 # 显示解析到的结果详情
-                                for i, result in enumerate(parsed_results[:5]):  # 显示前5个
+                                for i, result in enumerate(parsed_results[:3]):  # 显示前3个
                                     print(f"  📄 结果{i+1}: 标题='{result.get('title', '')[:30]}...', 链接='{result.get('link', '')[:50]}...'")
+                                
+                                # 为每个结果添加来源标记
+                                for result in parsed_results:
+                                    result['source'] = engine_name
                                 
                                 all_results.extend(parsed_results)
                                 successful_engines.append(engine_name)
@@ -256,20 +351,25 @@ class RealtimeSearchService:
         print(f"📊 搜索完成统计: 成功 {len(successful_engines)} 个引擎: {', '.join(successful_engines)}，总耗时 {total_elapsed:.2f}s")
         print(f"📊 原始结果汇总: 共获得 {len(all_results)} 个原始搜索结果")
 
+        # 合并和排序结果
+        merged_results = self._merge_and_rank_results(all_results, query)
+        print(f"🔄 合并排序后剩余 {len(merged_results)} 个结果")
+
         # 过滤官方网站
         print(f"🔍 开始过滤官方网站...")
         official_results = []
-        for i, result in enumerate(all_results):
+        for i, result in enumerate(merged_results):
             link = result.get("link", "")
             title = result.get("title", "")
-            print(f"🔍 检查结果{i+1}: 标题='{title[:30]}...', 链接='{link[:50]}...'")
+            source = result.get("source", "未知")
+            print(f"🔍 检查结果{i+1} (来源:{source}): 标题='{title[:30]}...', 链接='{link[:50]}...'")
             
             if self._is_official_website(link, query):
                 official_results.append({
                     "title": result.get("title", ""),
                     "url": result.get("link", ""),
                     "description": result.get("snippet", ""),
-                    "source": "搜索引擎"
+                    "source": f"{source}搜索引擎"
                 })
                 print(f"✅ 结果{i+1} 被识别为官方网站")
                 if len(official_results) >= max_results:
@@ -278,7 +378,7 @@ class RealtimeSearchService:
             else:
                 print(f"❌ 结果{i+1} 不是官方网站")
 
-        print(f"🎯 官方网站过滤完成: 从 {len(all_results)} 个原始结果中筛选出 {len(official_results)} 个官方网站")
+        print(f"🎯 官方网站过滤完成: 从 {len(merged_results)} 个合并结果中筛选出 {len(official_results)} 个官方网站")
 
         return {
             'query': query,
