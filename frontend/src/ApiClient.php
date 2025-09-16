@@ -43,12 +43,10 @@ class ApiClient
     {
         $data = [
             'query' => $query,
-            'page' => $page,
-            'limit' => $limit,
-            'category' => $category
+            'max_results' => $limit
         ];
         
-        return $this->post('/api/v1/search', $data);
+        return $this->post('/search', $data);
     }
     
     /**
@@ -130,7 +128,8 @@ class ApiClient
     {
         try {
             $response = $this->get('/health');
-            return isset($response['status']) && $response['status'] === 'ok';
+            // 修复bug: 后端返回的是 "healthy"，不是 "ok"
+            return isset($response['status']) && $response['status'] === 'healthy';
         } catch (Exception $e) {
             return false;
         }
