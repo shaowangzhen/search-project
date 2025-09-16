@@ -17,23 +17,31 @@ class RealtimeSearchService:
             "360": os.getenv("360_SEARCH_URL", "https://www.so.com/s?q="),
         }
         self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
         }
 
     async def _fetch_results(self, session: httpx.AsyncClient, engine: str, query: str):
         url = self.search_engines.get(engine) + query
         try:
-            print(f"🚀 启动 {engine} 搜索")
-            # 单个请求超时时间1.5秒
-            response = await session.get(url, headers=self.headers, follow_redirects=True, timeout=1.5)
+            print(f"🚀 启动 {engine} 搜索: {url}")
+            # 增加超时时间到3秒
+            response = await session.get(url, headers=self.headers, follow_redirects=True, timeout=3.0)
             response.raise_for_status()
-            print(f"✅ {engine} 搜索完成")
+            print(f"✅ {engine} 搜索完成，状态码: {response.status_code}")
             return response.text
         except httpx.RequestError as e:
             print(f"❌ {engine} 搜索失败: {e}")
             return None
         except asyncio.TimeoutError:
-            print(f"⏰ {engine} 搜索超时 (1.5s)")
+            print(f"⏰ {engine} 搜索超时 (3.0s)")
+            return None
+        except Exception as e:
+            print(f"❌ {engine} 搜索异常: {e}")
             return None
 
     def _parse_results(self, html_content: str, engine: str):
@@ -44,85 +52,130 @@ class RealtimeSearchService:
         results = []
 
         if engine == "google":
-            # Google搜索结果解析
-            for g in soup.find_all('div', class_='tF2CMy'):
-                title_tag = g.find('h3')
-                link_tag = g.find('a')
-                snippet_tag = g.find('div', class_='VwiC3b')
+            # Google搜索结果解析 - 多种选择器
+            selectors = [
+                'div.tF2CMy',
+                'div.g',
+                'div[data-ved]',
+                'div.rc'
+            ]
+            
+            for selector in selectors:
+                for g in soup.select(selector):
+                    title_tag = g.find('h3') or g.find('h2')
+                    link_tag = g.find('a')
+                    snippet_tag = g.find('div', class_='VwiC3b') or g.find('span', class_='aCOpRe')
 
-                if title_tag and link_tag:
-                    title = title_tag.get_text().strip()
-                    link = link_tag.get('href', '')
-                    snippet = snippet_tag.get_text().strip() if snippet_tag else ''
-                    results.append({"title": title, "link": link, "snippet": snippet})
-                    
+                    if title_tag and link_tag:
+                        title = title_tag.get_text().strip()
+                        link = link_tag.get('href', '')
+                        snippet = snippet_tag.get_text().strip() if snippet_tag else ''
+                        
+                        # 处理Google重定向链接
+                        if link.startswith('/url?q='):
+                            try:
+                                import urllib.parse
+                                link = urllib.parse.unquote(link.split('/url?q=')[1].split('&')[0])
+                            except:
+                                continue
+                        
+                        results.append({"title": title, "link": link, "snippet": snippet})
+                        
         elif engine == "bing":
-            # Bing搜索结果解析
-            for b in soup.find_all('li', class_='b_algo'):
-                title_tag = b.find('h2')
-                link_tag = b.find('a')
-                snippet_tag = b.find('p')
+            # Bing搜索结果解析 - 多种选择器
+            selectors = [
+                'li.b_algo',
+                'div.b_algo',
+                'li[data-bm]'
+            ]
+            
+            for selector in selectors:
+                for b in soup.select(selector):
+                    title_tag = b.find('h2') or b.find('h3')
+                    link_tag = b.find('a')
+                    snippet_tag = b.find('p') or b.find('div', class_='b_caption')
 
-                if title_tag and link_tag:
-                    title = title_tag.get_text().strip()
-                    link = link_tag.get('href', '')
-                    snippet = snippet_tag.get_text().strip() if snippet_tag else ''
-                    results.append({"title": title, "link": link, "snippet": snippet})
-                    
+                    if title_tag and link_tag:
+                        title = title_tag.get_text().strip()
+                        link = link_tag.get('href', '')
+                        snippet = snippet_tag.get_text().strip() if snippet_tag else ''
+                        results.append({"title": title, "link": link, "snippet": snippet})
+                        
         elif engine == "baidu":
-            # 百度搜索结果解析 - 修复解析逻辑
-            for result in soup.find_all('div', class_='result'):
-                title_tag = result.find('h3')
-                link_tag = result.find('a')
-                snippet_tag = result.find('span', class_='content-right_8Zs40') or result.find('div', class_='c-abstract')
+            # 百度搜索结果解析 - 多种选择器
+            selectors = [
+                'div.result',
+                'div[data-log]',
+                'div.c-container'
+            ]
+            
+            for selector in selectors:
+                for result in soup.select(selector):
+                    title_tag = result.find('h3') or result.find('h2')
+                    link_tag = result.find('a')
+                    snippet_tag = result.find('span', class_='content-right_8Zs40') or result.find('div', class_='c-abstract') or result.find('span', class_='c-color-text')
 
-                if title_tag and link_tag:
-                    title = title_tag.get_text().strip()
-                    link = link_tag.get('href', '')
-                    snippet = snippet_tag.get_text().strip() if snippet_tag else ''
-                    
-                    # 处理百度重定向链接
-                    if link.startswith('/link?url='):
-                        try:
-                            import urllib.parse
-                            decoded_url = urllib.parse.unquote(link.split('url=')[1].split('&')[0])
-                            link = decoded_url
-                        except:
-                            continue
-                    
-                    results.append({"title": title, "link": link, "snippet": snippet})
-                    
+                    if title_tag and link_tag:
+                        title = title_tag.get_text().strip()
+                        link = link_tag.get('href', '')
+                        snippet = snippet_tag.get_text().strip() if snippet_tag else ''
+                        
+                        # 处理百度重定向链接
+                        if link.startswith('/link?url='):
+                            try:
+                                import urllib.parse
+                                decoded_url = urllib.parse.unquote(link.split('url=')[1].split('&')[0])
+                                link = decoded_url
+                            except:
+                                continue
+                        
+                        results.append({"title": title, "link": link, "snippet": snippet})
+                        
         elif engine == "sogou":
-            # 搜狗搜索结果解析
-            for result in soup.find_all('div', class_='result'):
-                title_tag = result.find('h3')
-                link_tag = result.find('a')
-                snippet_tag = result.find('p', class_='str_info')
+            # 搜狗搜索结果解析 - 多种选择器
+            selectors = [
+                'div.result',
+                'div[data-log]',
+                'div.vrwrap'
+            ]
+            
+            for selector in selectors:
+                for result in soup.select(selector):
+                    title_tag = result.find('h3') or result.find('h2')
+                    link_tag = result.find('a')
+                    snippet_tag = result.find('p', class_='str_info') or result.find('div', class_='str_info')
 
-                if title_tag and link_tag:
-                    title = title_tag.get_text().strip()
-                    link = link_tag.get('href', '')
-                    snippet = snippet_tag.get_text().strip() if snippet_tag else ''
-                    results.append({"title": title, "link": link, "snippet": snippet})
-                    
+                    if title_tag and link_tag:
+                        title = title_tag.get_text().strip()
+                        link = link_tag.get('href', '')
+                        snippet = snippet_tag.get_text().strip() if snippet_tag else ''
+                        results.append({"title": title, "link": link, "snippet": snippet})
+                        
         elif engine == "360":
-            # 360搜索结果解析
-            for result in soup.find_all('li', class_='res-list'):
-                title_tag = result.find('h3')
-                link_tag = result.find('a')
-                snippet_tag = result.find('p', class_='res-desc')
+            # 360搜索结果解析 - 多种选择器
+            selectors = [
+                'li.res-list',
+                'div.res-list',
+                'li[data-log]'
+            ]
+            
+            for selector in selectors:
+                for result in soup.select(selector):
+                    title_tag = result.find('h3') or result.find('h2')
+                    link_tag = result.find('a')
+                    snippet_tag = result.find('p', class_='res-desc') or result.find('div', class_='res-desc')
 
-                if title_tag and link_tag:
-                    title = title_tag.get_text().strip()
-                    link = link_tag.get('href', '')
-                    snippet = snippet_tag.get_text().strip() if snippet_tag else ''
-                    results.append({"title": title, "link": link, "snippet": snippet})
+                    if title_tag and link_tag:
+                        title = title_tag.get_text().strip()
+                        link = link_tag.get('href', '')
+                        snippet = snippet_tag.get_text().strip() if snippet_tag else ''
+                        results.append({"title": title, "link": link, "snippet": snippet})
                     
         print(f"📊 {engine} 解析到 {len(results)} 个结果")
         return results
 
     def _is_official_website(self, link: str, query: str) -> bool:
-        if not link:
+        if not link or link == "No Link":
             return False
 
         # 简单的域名匹配
@@ -172,7 +225,7 @@ class RealtimeSearchService:
             # 使用 asyncio.as_completed 实现真正的并行等待
             completed_count = 0
             max_engines = 3
-            total_timeout = 2.0  # 总超时时间2.0秒
+            total_timeout = 3.0  # 总超时时间3.0秒
             
             try:
                 # 使用 asyncio.as_completed 实现真正的并行处理
