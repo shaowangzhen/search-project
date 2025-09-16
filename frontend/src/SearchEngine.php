@@ -3,6 +3,9 @@
  * 搜索引擎核心类
  */
 
+// 引入ApiClient类
+require_once 'ApiClient.php';
+
 class SearchEngine {
     private $apiClient;
     
@@ -159,7 +162,7 @@ class SearchEngine {
                     transform: translateY(0);
                 }
                 
-                /* 移动端优化 - 防止搜索框放大导致按钮溢出 */
+                /* 移动端优化 - 与首页完全一致 */
                 @media (max-width: 768px) {
                     .header-content {
                         flex-direction: column;
@@ -176,21 +179,21 @@ class SearchEngine {
                     }
                     
                     .search-form {
-                        flex-direction: row; /* 保持水平布局 */
-                        min-height: 50px; /* 固定最小高度 */
+                        flex-direction: row;
+                        min-height: 50px;
                     }
                     
                     .search-input {
                         padding: 12px 15px;
-                        font-size: 16px; /* 使用16px防止iOS自动缩放 */
-                        min-height: 50px; /* 固定高度 */
+                        font-size: 16px;
+                        min-height: 50px;
                     }
                     
                     .search-btn {
                         padding: 12px 20px;
                         font-size: 16px;
-                        min-width: 80px; /* 减少最小宽度 */
-                        flex-shrink: 0; /* 防止按钮被压缩 */
+                        min-width: 80px;
+                        flex-shrink: 0;
                     }
                 }
                 
@@ -223,6 +226,7 @@ class SearchEngine {
                         padding: 10px 15px;
                         font-size: 14px;
                         min-width: 70px;
+                        flex-shrink: 0;
                     }
                 }
                 
@@ -470,7 +474,7 @@ class SearchEngine {
                                     </a>
                                 </div>
                                 <div class="result-url">
-                                    <div class="url-icon">��</div>
+                                    <div class="url-icon">🔗</div>
                                     <span><?php echo htmlspecialchars($result['url']); ?></span>
                                 </div>
                                 <div class="result-snippet">
