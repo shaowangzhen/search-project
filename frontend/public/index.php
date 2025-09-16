@@ -400,6 +400,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             .search-container {
                 max-width: 500px;
             }
+            
+            .hot-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
         }
         
         @media (max-width: 768px) {
@@ -429,7 +433,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             }
             
             .hot-grid {
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 6px;
+            }
+            
+            .hot-item {
+                padding: 6px 8px;
+            }
+            
+            .hot-item a {
+                font-size: 13px;
+            }
+            
+            .hot-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 11px;
+                margin-right: 6px;
             }
             
             .nav-links {
@@ -473,7 +493,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             }
             
             .hot-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .hot-item {
+                padding: 8px 6px;
+                flex-direction: column;
+                text-align: center;
+                min-height: 60px;
+            }
+            
+            .hot-item a {
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+            }
+            
+            .hot-icon {
+                width: 24px;
+                height: 24px;
+                font-size: 14px;
+                margin-right: 0;
+                margin-bottom: 4px;
+            }
+            
+            .hot-item a span {
+                font-size: 12px;
+                line-height: 1.2;
             }
             
             .nav-section {
@@ -508,6 +555,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                 height: 20px;
                 font-size: 12px;
                 margin: 0;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .hot-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+            
+            .hot-item {
+                padding: 6px 4px;
+                min-height: 55px;
+            }
+            
+            .hot-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+            }
+            
+            .hot-item a span {
+                font-size: 11px;
             }
         }
     </style>
