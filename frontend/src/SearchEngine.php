@@ -297,7 +297,13 @@ class SearchEngine
                                     </a>
                                 </div>
                                 <div class="result-url"><?php echo htmlspecialchars($result['url']); ?></div>
-                                <div class="result-snippet"><?php echo htmlspecialchars($result['snippet']); ?></div>
+                                <div class="result-snippet">
+                                    <?php 
+                                    // 修复：支持 description 和 snippet 两个字段
+                                    $snippet = $result['description'] ?? $result['snippet'] ?? '暂无描述';
+                                    echo htmlspecialchars($snippet); 
+                                    ?>
+                                </div>
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
