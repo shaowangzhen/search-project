@@ -9,9 +9,8 @@ load_dotenv()
 
 class RealtimeSearchService:
     def __init__(self):
+        # 只保留中文搜索引擎：百度、搜狗、360搜索
         self.search_engines = {
-            "google": os.getenv("GOOGLE_SEARCH_URL", "https://www.google.com/search?q="),
-            "bing": os.getenv("BING_SEARCH_URL", "https://www.bing.com/search?q="),
             "baidu": os.getenv("BAIDU_SEARCH_URL", "https://www.baidu.com/s?wd="),
             "sogou": os.getenv("SOGOU_SEARCH_URL", "https://www.sogou.com/web?query="),
             "360": os.getenv("360_SEARCH_URL", "https://www.so.com/s?q="),
@@ -29,8 +28,8 @@ class RealtimeSearchService:
         url = self.search_engines.get(engine) + query
         try:
             print(f"🚀 启动 {engine} 搜索: {url}")
-            # 增加超时时间到3秒
-            response = await session.get(url, headers=self.headers, follow_redirects=True, timeout=3.0)
+            # 增加超时时间到5秒
+            response = await session.get(url, headers=self.headers, follow_redirects=True, timeout=5.0)
             response.raise_for_status()
             print(f"✅ {engine} 搜索完成，状态码: {response.status_code}")
             return response.text
@@ -38,7 +37,7 @@ class RealtimeSearchService:
             print(f"❌ {engine} 搜索失败: {e}")
             return None
         except asyncio.TimeoutError:
-            print(f"⏰ {engine} 搜索超时 (3.0s)")
+            print(f"⏰ {engine} 搜索超时 (5.0s)")
             return None
         except Exception as e:
             print(f"❌ {engine} 搜索异常: {e}")
@@ -46,64 +45,15 @@ class RealtimeSearchService:
 
     def _parse_results(self, html_content: str, engine: str):
         if not html_content:
+            print(f"⚠️ {engine} HTML内容为空")
             return []
 
         soup = BeautifulSoup(html_content, 'lxml')
         results = []
+        
+        print(f"🔍 {engine} 开始解析HTML内容，长度: {len(html_content)} 字符")
 
-        if engine == "google":
-            # Google搜索结果解析 - 多种选择器备选
-            selectors = [
-                'div.tF2CMy',
-                'div.g',
-                'div[data-ved]',
-                'div.rc',
-                'div[jscontroller]'
-            ]
-            
-            for selector in selectors:
-                for g in soup.select(selector):
-                    title_tag = g.find('h3') or g.find('h2')
-                    link_tag = g.find('a')
-                    snippet_tag = g.find('div', class_='VwiC3b') or g.find('span', class_='aCOpRe')
-
-                    if title_tag and link_tag:
-                        title = title_tag.get_text().strip()
-                        link = link_tag.get('href', '')
-                        snippet = snippet_tag.get_text().strip() if snippet_tag else ''
-                        
-                        # 处理Google重定向链接
-                        if link.startswith('/url?q='):
-                            try:
-                                import urllib.parse
-                                link = urllib.parse.unquote(link.split('/url?q=')[1].split('&')[0])
-                            except:
-                                continue
-                        
-                        results.append({"title": title, "link": link, "snippet": snippet})
-                        
-        elif engine == "bing":
-            # Bing搜索结果解析 - 多种选择器备选
-            selectors = [
-                'li.b_algo',
-                'div.b_algo',
-                'li[data-bm]',
-                'div[data-bm]'
-            ]
-            
-            for selector in selectors:
-                for b in soup.select(selector):
-                    title_tag = b.find('h2') or b.find('h3')
-                    link_tag = b.find('a')
-                    snippet_tag = b.find('p') or b.find('div', class_='b_caption')
-
-                    if title_tag and link_tag:
-                        title = title_tag.get_text().strip()
-                        link = link_tag.get('href', '')
-                        snippet = snippet_tag.get_text().strip() if snippet_tag else ''
-                        results.append({"title": title, "link": link, "snippet": snippet})
-                        
-        elif engine == "baidu":
+        if engine == "baidu":
             # 百度搜索结果解析 - 多种选择器备选
             selectors = [
                 'div.result',
@@ -113,8 +63,12 @@ class RealtimeSearchService:
                 'div[data-click]'
             ]
             
+            print(f"🔍 {engine} 尝试使用特定选择器解析...")
             for selector in selectors:
-                for result in soup.select(selector):
+                elements = soup.select(selector)
+                print(f"🔍 {engine} 选择器 '{selector}' 找到 {len(elements)} 个元素")
+                
+                for result in elements:
                     title_tag = result.find('h3') or result.find('h2')
                     link_tag = result.find('a')
                     snippet_tag = result.find('span', class_='content-right_8Zs40') or result.find('div', class_='c-abstract') or result.find('span', class_='c-color-text') or result.find('div', class_='c-span')
@@ -124,20 +78,24 @@ class RealtimeSearchService:
                         link = link_tag.get('href', '')
                         snippet = snippet_tag.get_text().strip() if snippet_tag else ''
                         
+                        print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
+                        
                         # 处理百度重定向链接
                         if link.startswith('/link?url='):
                             try:
                                 import urllib.parse
                                 decoded_url = urllib.parse.unquote(link.split('url=')[1].split('&')[0])
+                                print(f"🔄 {engine} 重定向链接: {link} -> {decoded_url}")
                                 link = decoded_url
                             except:
+                                print(f"⚠️ {engine} 重定向链接解析失败: {link}")
                                 continue
                         
                         results.append({"title": title, "link": link, "snippet": snippet})
             
             # 如果上面的选择器都没有找到结果，尝试更通用的方法
             if not results:
-                print(f"🔍 {engine} 使用通用解析方法")
+                print(f"🔍 {engine} 特定选择器未找到结果，使用通用解析方法...")
                 for result in soup.find_all('div'):
                     title_tag = result.find('h3') or result.find('h2')
                     link_tag = result.find('a')
@@ -153,9 +111,11 @@ class RealtimeSearchService:
                             if snippet_tag:
                                 snippet = snippet_tag.get_text().strip()
                             
+                            print(f"📄 {engine} 通用解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
                             results.append({"title": title, "link": link, "snippet": snippet})
                             
                             if len(results) >= 10:  # 限制结果数量
+                                print(f"🔍 {engine} 通用解析达到限制，停止解析")
                                 break
                         
         elif engine == "sogou":
@@ -167,8 +127,12 @@ class RealtimeSearchService:
                 'div[mu]'
             ]
             
+            print(f"🔍 {engine} 尝试使用特定选择器解析...")
             for selector in selectors:
-                for result in soup.select(selector):
+                elements = soup.select(selector)
+                print(f"🔍 {engine} 选择器 '{selector}' 找到 {len(elements)} 个元素")
+                
+                for result in elements:
                     title_tag = result.find('h3') or result.find('h2')
                     link_tag = result.find('a')
                     snippet_tag = result.find('p', class_='str_info') or result.find('div', class_='str_info')
@@ -177,6 +141,8 @@ class RealtimeSearchService:
                         title = title_tag.get_text().strip()
                         link = link_tag.get('href', '')
                         snippet = snippet_tag.get_text().strip() if snippet_tag else ''
+                        
+                        print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
                         results.append({"title": title, "link": link, "snippet": snippet})
                         
         elif engine == "360":
@@ -188,8 +154,12 @@ class RealtimeSearchService:
                 'div[data-log]'
             ]
             
+            print(f"🔍 {engine} 尝试使用特定选择器解析...")
             for selector in selectors:
-                for result in soup.select(selector):
+                elements = soup.select(selector)
+                print(f"🔍 {engine} 选择器 '{selector}' 找到 {len(elements)} 个元素")
+                
+                for result in elements:
                     title_tag = result.find('h3') or result.find('h2')
                     link_tag = result.find('a')
                     snippet_tag = result.find('p', class_='res-desc') or result.find('div', class_='res-desc')
@@ -198,9 +168,11 @@ class RealtimeSearchService:
                         title = title_tag.get_text().strip()
                         link = link_tag.get('href', '')
                         snippet = snippet_tag.get_text().strip() if snippet_tag else ''
+                        
+                        print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
                         results.append({"title": title, "link": link, "snippet": snippet})
                     
-        print(f"�� {engine} 解析到 {len(results)} 个结果")
+        print(f"📊 {engine} 解析完成，共获得 {len(results)} 个结果")
         return results
 
     def _is_official_website(self, link: str, query: str) -> bool:
@@ -214,33 +186,39 @@ class RealtimeSearchService:
         # 检查域名是否包含查询词
         for part in query_parts:
             if part and part in domain:
+                print(f"🎯 官方网站匹配: 查询词 '{part}' 匹配域名 '{domain}'")
                 return True
 
         # 进一步检查顶级域名和常见官方后缀
         official_tlds = ['.gov', '.edu', '.org', '.mil', '.int', '.gov.cn', '.edu.cn']
         if any(tld in domain for tld in official_tlds):
+            print(f"🎯 官方网站匹配: 域名 '{domain}' 包含官方后缀")
             return True
 
         # 针对特定关键词的更严格检查
         if "官网" in query or "官方网站" in query:
             if "official" in domain or "gov" in domain or "edu" in domain:
+                print(f"🎯 官方网站匹配: 查询包含官网关键词，域名 '{domain}' 匹配")
                 return True
 
         # 中文官方网站关键词检查
         chinese_official_keywords = ['官网', '官方', '政府', '教育', '机构', '组织']
         for keyword in chinese_official_keywords:
             if keyword in query and keyword in domain:
+                print(f"🎯 官方网站匹配: 中文关键词 '{keyword}' 匹配域名 '{domain}'")
                 return True
 
         return False
 
     async def search(self, query: str, max_results: int = 10):
-        """执行实时搜索 - 3秒内返回结果，真正的并行搜索"""
+        """执行实时搜索 - 5秒内返回结果，只使用中文搜索引擎"""
         import time
         start_time = time.time()
         
         all_results = []
         successful_engines = []
+        
+        print(f"🔍 开始搜索: '{query}'，使用中文搜索引擎: {list(self.search_engines.keys())}")
         
         async with httpx.AsyncClient() as session:
             # 创建所有搜索任务 - 真正的并行启动
@@ -249,12 +227,12 @@ class RealtimeSearchService:
                 task = asyncio.create_task(self._fetch_results(session, engine, query))
                 tasks[engine] = task
             
-            print(f"🚀 并行启动 {len(tasks)} 个搜索引擎任务")
+            print(f"🚀 并行启动 {len(tasks)} 个中文搜索引擎任务")
             
             # 使用 asyncio.as_completed 实现真正的并行等待
             completed_count = 0
-            max_engines = 3
-            total_timeout = 3.0  # 总超时时间3.0秒
+            max_engines = 3  # 最多使用3个引擎（全部）
+            total_timeout = 5.0  # 总超时时间5.0秒
             
             try:
                 # 使用 asyncio.as_completed 实现真正的并行处理
@@ -266,7 +244,7 @@ class RealtimeSearchService:
                         break
                     
                     if completed_count >= max_engines:
-                        print(f"🎯 已获得前3个引擎结果，取消剩余任务")
+                        print(f"�� 已获得前3个引擎结果，取消剩余任务")
                         break
                     
                     try:
@@ -280,7 +258,15 @@ class RealtimeSearchService:
                                 break
                         
                         if engine_name and response_text:
+                            print(f"🔍 {engine_name} 开始解析搜索结果...")
                             parsed_results = self._parse_results(response_text, engine_name)
+                            
+                            print(f"📊 {engine_name} 解析完成，获得 {len(parsed_results)} 个原始结果")
+                            
+                            # 显示解析到的结果详情
+                            for i, result in enumerate(parsed_results[:3]):  # 只显示前3个
+                                print(f"  📄 结果{i+1}: 标题='{result.get('title', '')[:30]}...', 链接='{result.get('link', '')[:50]}...'")
+                            
                             all_results.extend(parsed_results)
                             successful_engines.append(engine_name)
                             completed_count += 1
@@ -309,21 +295,31 @@ class RealtimeSearchService:
 
         total_elapsed = time.time() - start_time
         print(f"📊 搜索完成统计: 成功 {len(successful_engines)} 个引擎: {', '.join(successful_engines)}，总耗时 {total_elapsed:.2f}s")
+        print(f"📊 原始结果汇总: 共获得 {len(all_results)} 个原始搜索结果")
 
         # 过滤官方网站
+        print(f"🔍 开始过滤官方网站...")
         official_results = []
-        for result in all_results:
-            if self._is_official_website(result.get("link"), query):
+        for i, result in enumerate(all_results):
+            link = result.get("link", "")
+            title = result.get("title", "")
+            print(f"🔍 检查结果{i+1}: 标题='{title[:30]}...', 链接='{link[:50]}...'")
+            
+            if self._is_official_website(link, query):
                 official_results.append({
                     "title": result.get("title", ""),
                     "url": result.get("link", ""),
                     "description": result.get("snippet", ""),
                     "source": "搜索引擎"
                 })
+                print(f"✅ 结果{i+1} 被识别为官方网站")
                 if len(official_results) >= max_results:
+                    print(f"🎯 已达到最大结果数量限制 {max_results}，停止过滤")
                     break
+            else:
+                print(f"❌ 结果{i+1} 不是官方网站")
 
-        print(f"🎯 官方网站过滤: 从 {len(all_results)} 个结果中筛选出 {len(official_results)} 个官方网站")
+        print(f"🎯 官方网站过滤完成: 从 {len(all_results)} 个原始结果中筛选出 {len(official_results)} 个官方网站")
 
         return {
             'query': query,

@@ -12,7 +12,7 @@ from services.realtime_search_service import RealtimeSearchService
 
 app = FastAPI(
     title="官方网站搜索引擎 API",
-    description="一个实时搜索官方网站的API，支持5个搜索引擎，采用3秒快速响应策略：总超时2.5秒，单个请求1.5秒，真正的并行搜索。",
+    description="一个实时搜索官方网站的API，支持3个中文搜索引擎，采用5秒快速响应策略：总超时5秒，单个请求5秒，真正的并行搜索。",
     version="1.0.0",
 )
 
@@ -50,12 +50,12 @@ async def health_check():
     return {
         "status": "healthy", 
         "version": "1.0.0",
-        "search_engines": ["Google", "Bing", "百度", "搜狗", "360搜索"],
-        "total_engines": 5,
-        "strategy": "3秒快速响应策略 - 真正的并行搜索",
+        "search_engines": ["百度", "搜狗", "360搜索"],
+        "total_engines": 3,
+        "strategy": "5秒快速响应策略 - 只使用中文搜索引擎",
         "timeout_settings": {
-            "total_timeout": "2.5秒",
-            "single_request_timeout": "1.5秒",
+            "total_timeout": "5.0秒",
+            "single_request_timeout": "5.0秒",
             "max_engines_used": 3
         }
     }
@@ -66,17 +66,15 @@ async def get_search_engines():
     """获取支持的搜索引擎列表"""
     return {
         "engines": [
-            {"name": "Google", "url": "https://www.google.com", "type": "国际", "priority": "高"},
-            {"name": "Bing", "url": "https://www.bing.com", "type": "国际", "priority": "高"},
             {"name": "百度", "url": "https://www.baidu.com", "type": "中文", "priority": "高"},
             {"name": "搜狗", "url": "https://www.sogou.com", "type": "中文", "priority": "中"},
             {"name": "360搜索", "url": "https://www.so.com", "type": "中文", "priority": "中"}
         ],
-        "total": 5,
-        "strategy": "3秒快速响应策略 - 真正的并行搜索",
+        "total": 3,
+        "strategy": "5秒快速响应策略 - 只使用中文搜索引擎",
         "timeout_settings": {
-            "total_timeout": "2.5秒",
-            "single_request_timeout": "1.5秒",
+            "total_timeout": "5.0秒",
+            "single_request_timeout": "5.0秒",
             "max_engines_used": 3
         }
     }
@@ -84,9 +82,9 @@ async def get_search_engines():
 # 搜索接口
 @app.post("/search", response_model=SearchResponse)
 async def search_official_websites(request: SearchRequest):
-    """搜索官方网站 - 3秒快速响应策略，真正的并行搜索"""
+    """搜索官方网站 - 5秒快速响应策略，只使用中文搜索引擎"""
     try:
-        print(f"收到搜索请求: {request.query}")
+        print(f"🔍 收到搜索请求: {request.query}")
         
         # 执行搜索
         results = await search_service.search(
@@ -94,12 +92,12 @@ async def search_official_websites(request: SearchRequest):
             max_results=request.max_results
         )
         
-        print(f"搜索完成，返回 {results['total_results']} 个结果，使用了 {results['engines_count']} 个搜索引擎，耗时 {results['search_time']}")
+        print(f"🎯 搜索完成，返回 {results['total_results']} 个结果，使用了 {results['engines_count']} 个搜索引擎，耗时 {results['search_time']}")
         
         return SearchResponse(**results)
         
     except Exception as e:
-        print(f"搜索出错: {e}")
+        print(f"❌ 搜索出错: {e}")
         raise HTTPException(status_code=500, detail=f"搜索失败: {str(e)}")
 
 # 根路径
@@ -109,12 +107,12 @@ async def root():
     return {
         "message": "官方网站搜索引擎",
         "version": "1.0.0",
-        "description": "支持5个搜索引擎的实时官方网站搜索，采用3秒快速响应策略，真正的并行搜索",
-        "search_engines": ["Google", "Bing", "百度", "搜狗", "360搜索"],
-        "strategy": "3秒快速响应策略 - 真正的并行搜索",
+        "description": "支持3个中文搜索引擎的实时官方网站搜索，采用5秒快速响应策略，真正的并行搜索",
+        "search_engines": ["百度", "搜狗", "360搜索"],
+        "strategy": "5秒快速响应策略 - 只使用中文搜索引擎",
         "timeout_settings": {
-            "total_timeout": "2.5秒",
-            "single_request_timeout": "1.5秒",
+            "total_timeout": "5.0秒",
+            "single_request_timeout": "5.0秒",
             "max_engines_used": 3
         },
         "docs": "/docs",
