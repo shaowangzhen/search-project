@@ -54,123 +54,96 @@ class RealtimeSearchService:
         print(f"🔍 {engine} 开始解析HTML内容，长度: {len(html_content)} 字符")
 
         if engine == "baidu":
-            # 百度搜索结果解析 - 多种选择器备选
-            selectors = [
-                'div.result',
-                'div[data-log]',
-                'div.c-container',
-                'div[mu]',
-                'div[data-click]'
-            ]
+            # 百度搜索结果解析 - 使用更通用的方法
+            print(f"🔍 {engine} 使用通用解析方法...")
             
-            print(f"🔍 {engine} 尝试使用特定选择器解析...")
-            for selector in selectors:
-                elements = soup.select(selector)
-                print(f"🔍 {engine} 选择器 '{selector}' 找到 {len(elements)} 个元素")
-                
-                for result in elements:
-                    title_tag = result.find('h3') or result.find('h2')
-                    link_tag = result.find('a')
-                    snippet_tag = result.find('span', class_='content-right_8Zs40') or result.find('div', class_='c-abstract') or result.find('span', class_='c-color-text') or result.find('div', class_='c-span')
-
-                    if title_tag and link_tag:
-                        title = title_tag.get_text().strip()
-                        link = link_tag.get('href', '')
-                        snippet = snippet_tag.get_text().strip() if snippet_tag else ''
-                        
-                        print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
-                        
-                        # 处理百度重定向链接
-                        if link.startswith('/link?url='):
-                            try:
-                                import urllib.parse
-                                decoded_url = urllib.parse.unquote(link.split('url=')[1].split('&')[0])
-                                print(f"🔄 {engine} 重定向链接: {link} -> {decoded_url}")
-                                link = decoded_url
-                            except:
-                                print(f"⚠️ {engine} 重定向链接解析失败: {link}")
-                                continue
-                        
-                        results.append({"title": title, "link": link, "snippet": snippet})
-            
-            # 如果上面的选择器都没有找到结果，尝试更通用的方法
-            if not results:
-                print(f"🔍 {engine} 特定选择器未找到结果，使用通用解析方法...")
-                for result in soup.find_all('div'):
-                    title_tag = result.find('h3') or result.find('h2')
-                    link_tag = result.find('a')
+            # 查找所有包含链接的div
+            for div in soup.find_all('div'):
+                # 查找标题
+                title_tag = div.find('h3') or div.find('h2') or div.find('a')
+                if not title_tag:
+                    continue
                     
-                    if title_tag and link_tag and link_tag.get('href'):
-                        title = title_tag.get_text().strip()
-                        link = link_tag.get('href', '')
-                        
-                        # 只处理包含http的链接
-                        if link.startswith('http'):
-                            snippet = ''
-                            snippet_tag = result.find('span') or result.find('div')
-                            if snippet_tag:
-                                snippet = snippet_tag.get_text().strip()
-                            
-                            print(f"📄 {engine} 通用解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
-                            results.append({"title": title, "link": link, "snippet": snippet})
-                            
-                            if len(results) >= 10:  # 限制结果数量
-                                print(f"🔍 {engine} 通用解析达到限制，停止解析")
-                                break
+                # 查找链接
+                link_tag = div.find('a')
+                if not link_tag or not link_tag.get('href'):
+                    continue
+                    
+                title = title_tag.get_text().strip()
+                link = link_tag.get('href', '')
+                
+                # 只处理包含http的链接
+                if link.startswith('http'):
+                    snippet = ''
+                    # 查找摘要
+                    snippet_tag = div.find('span') or div.find('div', class_='c-abstract') or div.find('div', class_='c-span')
+                    if snippet_tag:
+                        snippet = snippet_tag.get_text().strip()
+                    
+                    print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
+                    results.append({"title": title, "link": link, "snippet": snippet})
+                    
+                    if len(results) >= 10:  # 限制结果数量
+                        print(f"🔍 {engine} 达到结果数量限制，停止解析")
+                        break
                         
         elif engine == "sogou":
-            # 搜狗搜索结果解析 - 多种选择器备选
-            selectors = [
-                'div.result',
-                'div[data-log]',
-                'div.vrwrap',
-                'div[mu]'
-            ]
+            # 搜狗搜索结果解析 - 使用更通用的方法
+            print(f"🔍 {engine} 使用通用解析方法...")
             
-            print(f"🔍 {engine} 尝试使用特定选择器解析...")
-            for selector in selectors:
-                elements = soup.select(selector)
-                print(f"🔍 {engine} 选择器 '{selector}' 找到 {len(elements)} 个元素")
+            for div in soup.find_all('div'):
+                title_tag = div.find('h3') or div.find('h2') or div.find('a')
+                if not title_tag:
+                    continue
+                    
+                link_tag = div.find('a')
+                if not link_tag or not link_tag.get('href'):
+                    continue
+                    
+                title = title_tag.get_text().strip()
+                link = link_tag.get('href', '')
                 
-                for result in elements:
-                    title_tag = result.find('h3') or result.find('h2')
-                    link_tag = result.find('a')
-                    snippet_tag = result.find('p', class_='str_info') or result.find('div', class_='str_info')
-
-                    if title_tag and link_tag:
-                        title = title_tag.get_text().strip()
-                        link = link_tag.get('href', '')
-                        snippet = snippet_tag.get_text().strip() if snippet_tag else ''
-                        
-                        print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
-                        results.append({"title": title, "link": link, "snippet": snippet})
+                if link.startswith('http'):
+                    snippet = ''
+                    snippet_tag = div.find('p') or div.find('span') or div.find('div')
+                    if snippet_tag:
+                        snippet = snippet_tag.get_text().strip()
+                    
+                    print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
+                    results.append({"title": title, "link": link, "snippet": snippet})
+                    
+                    if len(results) >= 10:
+                        print(f"🔍 {engine} 达到结果数量限制，停止解析")
+                        break
                         
         elif engine == "360":
-            # 360搜索结果解析 - 多种选择器备选
-            selectors = [
-                'li.res-list',
-                'div.res-list',
-                'li[data-log]',
-                'div[data-log]'
-            ]
+            # 360搜索结果解析 - 使用更通用的方法
+            print(f"🔍 {engine} 使用通用解析方法...")
             
-            print(f"🔍 {engine} 尝试使用特定选择器解析...")
-            for selector in selectors:
-                elements = soup.select(selector)
-                print(f"🔍 {engine} 选择器 '{selector}' 找到 {len(elements)} 个元素")
+            for div in soup.find_all('div'):
+                title_tag = div.find('h3') or div.find('h2') or div.find('a')
+                if not title_tag:
+                    continue
+                    
+                link_tag = div.find('a')
+                if not link_tag or not link_tag.get('href'):
+                    continue
+                    
+                title = title_tag.get_text().strip()
+                link = link_tag.get('href', '')
                 
-                for result in elements:
-                    title_tag = result.find('h3') or result.find('h2')
-                    link_tag = result.find('a')
-                    snippet_tag = result.find('p', class_='res-desc') or result.find('div', class_='res-desc')
-
-                    if title_tag and link_tag:
-                        title = title_tag.get_text().strip()
-                        link = link_tag.get('href', '')
-                        snippet = snippet_tag.get_text().strip() if snippet_tag else ''
-                        
-                        print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
-                        results.append({"title": title, "link": link, "snippet": snippet})
+                if link.startswith('http'):
+                    snippet = ''
+                    snippet_tag = div.find('p') or div.find('span') or div.find('div')
+                    if snippet_tag:
+                        snippet = snippet_tag.get_text().strip()
+                    
+                    print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
+                    results.append({"title": title, "link": link, "snippet": snippet})
+                    
+                    if len(results) >= 10:
+                        print(f"🔍 {engine} 达到结果数量限制，停止解析")
+                        break
                     
         print(f"📊 {engine} 解析完成，共获得 {len(results)} 个结果")
         return results
@@ -244,7 +217,7 @@ class RealtimeSearchService:
                         break
                     
                     if completed_count >= max_engines:
-                        print(f"�� 已获得前3个引擎结果，取消剩余任务")
+                        print(f"🎯 已获得前3个引擎结果，取消剩余任务")
                         break
                     
                     try:
