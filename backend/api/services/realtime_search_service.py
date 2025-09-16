@@ -3,15 +3,15 @@ from bs4 import BeautifulSoup
 import re
 import asyncio
 import os
+import urllib.parse
 from dotenv import load_dotenv
 
 load_dotenv()
 
 class RealtimeSearchService:
     def __init__(self):
-        # 只保留百度、搜狗两个搜索引擎
+        # 只保留搜狗搜索引擎，百度有反爬虫机制
         self.search_engines = {
-            "baidu": os.getenv("BAIDU_SEARCH_URL", "https://www.baidu.com/s?wd="),
             "sogou": os.getenv("SOGOU_SEARCH_URL", "https://www.sogou.com/web?query="),
         }
         self.headers = {
@@ -24,7 +24,9 @@ class RealtimeSearchService:
         }
 
     async def _fetch_results(self, session: httpx.AsyncClient, engine: str, query: str):
-        url = self.search_engines.get(engine) + query
+        # 修复URL编码问题
+        encoded_query = urllib.parse.quote(query)
+        url = self.search_engines.get(engine) + encoded_query
         try:
             print(f"🚀 启动 {engine} 搜索: {url}")
             # 增加超时时间到5秒
@@ -53,41 +55,7 @@ class RealtimeSearchService:
         
         print(f"🔍 {engine} 开始解析HTML内容，长度: {len(html_content)} 字符")
 
-        if engine == "baidu":
-            # 百度搜索结果解析 - 使用更通用的方法
-            print(f"🔍 {engine} 使用通用解析方法...")
-            
-            # 查找所有包含链接的div
-            for div in soup.find_all('div'):
-                # 查找标题
-                title_tag = div.find('h3') or div.find('h2') or div.find('a')
-                if not title_tag:
-                    continue
-                    
-                # 查找链接
-                link_tag = div.find('a')
-                if not link_tag or not link_tag.get('href'):
-                    continue
-                    
-                title = title_tag.get_text().strip()
-                link = link_tag.get('href', '')
-                
-                # 只处理包含http的链接
-                if link.startswith('http'):
-                    snippet = ''
-                    # 查找摘要
-                    snippet_tag = div.find('span') or div.find('div', class_='c-abstract') or div.find('div', class_='c-span')
-                    if snippet_tag:
-                        snippet = snippet_tag.get_text().strip()
-                    
-                    print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
-                    results.append({"title": title, "link": link, "snippet": snippet})
-                    
-                    if len(results) >= 10:  # 限制结果数量
-                        print(f"🔍 {engine} 达到结果数量限制，停止解析")
-                        break
-                        
-        elif engine == "sogou":
+        if engine == "sogou":
             # 搜狗搜索结果解析 - 使用更通用的方法
             print(f"🔍 {engine} 使用通用解析方法...")
             
@@ -112,7 +80,7 @@ class RealtimeSearchService:
                     print(f"📄 {engine} 解析到结果: 标题='{title[:50]}...', 链接='{link[:50]}...'")
                     results.append({"title": title, "link": link, "snippet": snippet})
                     
-                    if len(results) >= 10:
+                    if len(results) >= 15:  # 增加结果数量限制
                         print(f"🔍 {engine} 达到结果数量限制，停止解析")
                         break
                     
@@ -123,39 +91,96 @@ class RealtimeSearchService:
         if not link or link == "No Link":
             return False
 
-        # 简单的域名匹配
-        query_parts = re.split(r'\s+', query.lower())
+        # 提取域名
         domain = re.sub(r'https?://(?:www\.)?', '', link).split('/')[0]
+        print(f"     检查链接: {link}，域名: {domain}")
 
-        # 检查域名是否包含查询词
+        # 扩展的中文到英文映射
+        chinese_to_english = {
+            '优酷': 'youku',
+            '百度': 'baidu', 
+            '腾讯': 'tencent',
+            '阿里巴巴': 'alibaba',
+            '新浪': 'sina',
+            '网易': 'netease',
+            '搜狐': 'sohu',
+            '京东': 'jd',
+            '淘宝': 'taobao',
+            '天猫': 'tmall',
+            '微信': 'wechat',
+            'QQ': 'qq',
+            '微博': 'weibo',
+            '知乎': 'zhihu',
+            '抖音': 'douyin',
+            '快手': 'kuaishou',
+            'B站': 'bilibili',
+            '爱奇艺': 'iqiyi',
+            '腾讯视频': 'v.qq',
+            '芒果TV': 'mgtv',
+            '哔哩哔哩': 'bilibili',
+            '华为': 'huawei',
+            '小米': 'xiaomi',
+            'OPPO': 'oppo',
+            'vivo': 'vivo',
+            '美团': 'meituan',
+            '滴滴': 'didi',
+            '字节跳动': 'bytedance',
+            '今日头条': 'toutiao',
+            '拼多多': 'pinduoduo',
+            '携程': 'ctrip',
+            '去哪儿': 'qunar',
+            '同程': 'ly',
+            '马蜂窝': 'mafengwo',
+            '途牛': 'tuniu',
+            '飞猪': 'fliggy',
+            '去哪儿网': 'qunar',
+            '同程网': 'ly',
+            '马蜂窝网': 'mafengwo',
+            '途牛网': 'tuniu',
+            '飞猪网': 'fliggy'
+        }
+
+        # 检查域名是否包含查询词（支持中英文匹配）
+        query_parts = re.split(r'\s+', query.lower())
         for part in query_parts:
             if part and part in domain:
-                print(f"🎯 官方网站匹配: 查询词 '{part}' 匹配域名 '{domain}'")
+                print(f"    🎯 官方网站匹配: 查询词 '{part}' 匹配域名 '{domain}'")
                 return True
+            
+            # 检查中文到英文的映射
+            if part in chinese_to_english:
+                english_part = chinese_to_english[part]
+                if english_part in domain:
+                    print(f"    🎯 官方网站匹配: 中文查询词 '{part}' 对应英文 '{english_part}' 匹配域名 '{domain}'")
+                    return True
 
         # 进一步检查顶级域名和常见官方后缀
         official_tlds = ['.gov', '.edu', '.org', '.mil', '.int', '.gov.cn', '.edu.cn']
         if any(tld in domain for tld in official_tlds):
-            print(f"🎯 官方网站匹配: 域名 '{domain}' 包含官方后缀")
+            print(f"    🎯 官方网站匹配: 域名 '{domain}' 包含官方后缀")
             return True
 
         # 针对特定关键词的更严格检查
         if "官网" in query or "官方网站" in query:
             if "official" in domain or "gov" in domain or "edu" in domain:
-                print(f"🎯 官方网站匹配: 查询包含官网关键词，域名 '{domain}' 匹配")
+                print(f"    🎯 官方网站匹配: 查询包含官网关键词，域名 '{domain}' 匹配")
                 return True
 
         # 中文官方网站关键词检查
         chinese_official_keywords = ['官网', '官方', '政府', '教育', '机构', '组织']
         for keyword in chinese_official_keywords:
             if keyword in query and keyword in domain:
-                print(f"🎯 官方网站匹配: 中文关键词 '{keyword}' 匹配域名 '{domain}'")
+                print(f"    🎯 官方网站匹配: 中文关键词 '{keyword}' 匹配域名 '{domain}'")
                 return True
 
+        # 放宽条件：如果查询词在标题中出现，也认为是官方网站
+        # 这里我们需要从外部传入标题，暂时跳过
+
+        print(f"    ❌ 未识别为官方网站")
         return False
 
     async def search(self, query: str, max_results: int = 10):
-        """执行实时搜索 - 5秒内返回结果，只使用百度、搜狗两个搜索引擎"""
+        """执行实时搜索 - 5秒内返回结果，只使用搜狗搜索引擎"""
         import time
         start_time = time.time()
         
@@ -171,29 +196,16 @@ class RealtimeSearchService:
                 task = asyncio.create_task(self._fetch_results(session, engine, query))
                 tasks[engine] = task
             
-            print(f"�� 并行启动 {len(tasks)} 个搜索引擎任务")
+            print(f"🚀 并行启动 {len(tasks)} 个搜索引擎任务")
             
-            # 使用 asyncio.as_completed 实现真正的并行等待
-            completed_count = 0
-            max_engines = 2  # 最多使用2个引擎（全部）
-            total_timeout = 5.0  # 总超时时间5.0秒
-            
+            # 修复：使用 asyncio.wait 而不是 asyncio.as_completed
             try:
-                # 使用 asyncio.as_completed 实现真正的并行处理
-                for task in asyncio.as_completed(tasks.values(), timeout=total_timeout):
-                    # 检查总时间是否超时
-                    elapsed = time.time() - start_time
-                    if elapsed > total_timeout:
-                        print(f"⏰ 总搜索时间超过 {total_timeout} 秒，停止等待")
-                        break
-                    
-                    if completed_count >= max_engines:
-                        print(f"🎯 已获得前2个引擎结果，取消剩余任务")
-                        break
-                    
+                # 等待所有任务完成，但设置超时
+                done, pending = await asyncio.wait(tasks.values(), timeout=5.0, return_when=asyncio.ALL_COMPLETED)
+                
+                # 处理完成的任务
+                for task in done:
                     try:
-                        response_text = await task
-                        
                         # 找到对应的引擎名称
                         engine_name = None
                         for eng, t in tasks.items():
@@ -201,41 +213,44 @@ class RealtimeSearchService:
                                 engine_name = eng
                                 break
                         
-                        if engine_name and response_text:
-                            print(f"🔍 {engine_name} 开始解析搜索结果...")
-                            parsed_results = self._parse_results(response_text, engine_name)
-                            
-                            print(f"📊 {engine_name} 解析完成，获得 {len(parsed_results)} 个原始结果")
-                            
-                            # 显示解析到的结果详情
-                            for i, result in enumerate(parsed_results[:3]):  # 只显示前3个
-                                print(f"  📄 结果{i+1}: 标题='{result.get('title', '')[:30]}...', 链接='{result.get('link', '')[:50]}...'")
-                            
-                            all_results.extend(parsed_results)
-                            successful_engines.append(engine_name)
-                            completed_count += 1
-                            elapsed = time.time() - start_time
-                            print(f"✅ {engine_name} 搜索完成，获得 {len(parsed_results)} 个结果，耗时 {elapsed:.2f}s")
+                        if engine_name:
+                            response_text = task.result()
+                            if response_text:
+                                print(f"🔍 {engine_name} 开始解析搜索结果...")
+                                parsed_results = self._parse_results(response_text, engine_name)
+                                
+                                print(f"📊 {engine_name} 解析完成，获得 {len(parsed_results)} 个原始结果")
+                                
+                                # 显示解析到的结果详情
+                                for i, result in enumerate(parsed_results[:5]):  # 显示前5个
+                                    print(f"  📄 结果{i+1}: 标题='{result.get('title', '')[:30]}...', 链接='{result.get('link', '')[:50]}...'")
+                                
+                                all_results.extend(parsed_results)
+                                successful_engines.append(engine_name)
+                                elapsed = time.time() - start_time
+                                print(f"✅ {engine_name} 搜索完成，获得 {len(parsed_results)} 个结果，耗时 {elapsed:.2f}s")
+                            else:
+                                print(f"❌ {engine_name} 未返回有效结果")
                         else:
-                            print(f"❌ {engine_name} 未返回有效结果")
+                            print(f"❌ 无法找到对应的引擎名称")
                             
-                    except asyncio.TimeoutError:
-                        elapsed = time.time() - start_time
-                        print(f"⏰ 任务超时，总耗时 {elapsed:.2f}s")
-                        break
                     except Exception as e:
                         print(f"❌ 任务处理失败: {e}")
-                        continue
+                        import traceback
+                        traceback.print_exc()
+                
+                # 取消未完成的任务
+                for task in pending:
+                    task.cancel()
+                    print(f"❌ 取消未完成的任务")
                         
             except asyncio.TimeoutError:
                 elapsed = time.time() - start_time
                 print(f"⏰ 总搜索超时，总耗时 {elapsed:.2f}s")
-            
-            # 取消所有剩余任务
-            for engine, task in tasks.items():
-                if not task.done():
-                    task.cancel()
-                    print(f"❌ 取消 {engine} 任务")
+                # 取消所有任务
+                for task in tasks.values():
+                    if not task.done():
+                        task.cancel()
 
         total_elapsed = time.time() - start_time
         print(f"📊 搜索完成统计: 成功 {len(successful_engines)} 个引擎: {', '.join(successful_engines)}，总耗时 {total_elapsed:.2f}s")
