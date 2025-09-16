@@ -433,13 +433,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             }
             
             .nav-links {
-                gap: 10px;
-                justify-content: flex-start;
+                gap: 8px;
+                justify-content: center;
             }
             
             .nav-links a {
-                padding: 8px 14px;
+                padding: 8px 12px;
                 font-size: 13px;
+                flex: 1;
+                min-width: 0;
+                justify-content: center;
+            }
+            
+            .nav-icon {
+                width: 16px;
+                height: 16px;
+                font-size: 10px;
             }
         }
         
@@ -467,9 +476,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
                 grid-template-columns: 1fr;
             }
             
+            .nav-section {
+                padding: 10px 0;
+            }
+            
             .nav-links {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                padding: 0 10px;
+            }
+            
+            .nav-links a {
+                padding: 12px 8px;
+                font-size: 12px;
+                text-align: center;
                 flex-direction: column;
-                align-items: center;
+                gap: 4px;
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.15);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+            }
+            
+            .nav-links a:hover {
+                background: rgba(255, 255, 255, 0.25);
+                transform: translateY(-1px);
+            }
+            
+            .nav-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+                margin: 0;
             }
         }
     </style>
