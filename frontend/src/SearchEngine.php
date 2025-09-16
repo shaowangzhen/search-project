@@ -73,73 +73,128 @@ class SearchEngine {
                     font-size: 14px;
                 }
                 
+                /* 头部样式 - 与首页完全一致 */
                 .header {
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    color: white;
-                    padding: 20px 0;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                    border-bottom: 2px solid #1e3c72;
+                    padding: 15px 0;
+                    box-shadow: 0 2px 8px rgba(30, 60, 114, 0.2);
                 }
                 
                 .header-content {
                     max-width: 1200px;
                     margin: 0 auto;
-                    padding: 0 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 15px;
+                    padding: 0 15px;
                 }
                 
                 .logo {
-                    font-size: 28px;
+                    font-size: 32px;
                     font-weight: bold;
-                    margin-bottom: 10px;
-                    text-align: center;
+                    color: #ffffff;
+                    text-decoration: none;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+                    white-space: nowrap;
+                    flex-shrink: 0;
                 }
                 
-                .search-form {
+                .search-container {
+                    flex: 1;
                     max-width: 600px;
-                    margin: 0 auto;
                     position: relative;
                 }
                 
-                .search-input {
-                    width: 100%;
-                    padding: 15px 20px;
-                    font-size: 16px;
+                .search-form {
+                    display: flex;
+                    background: #ffffff;
                     border: 3px solid #3498db;
-                    border-radius: 25px;
-                    outline: none;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
                     transition: all 0.3s ease;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
                 }
                 
-                .search-input:focus {
+                .search-form:focus-within {
                     border-color: #2980b9;
-                    box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
+                    box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
                     transform: translateY(-2px);
                 }
                 
-                .search-button {
-                    position: absolute;
-                    right: 5px;
-                    top: 50%;
-                    transform: translateY(-50%);
+                .search-input {
+                    flex: 1;
+                    padding: 16px 20px;
+                    border: none;
+                    outline: none;
+                    font-size: 18px;
+                    color: #2c3e50;
+                    background: transparent;
+                }
+                
+                .search-input::placeholder {
+                    color: #95a5a6;
+                    font-size: 16px;
+                }
+                
+                .search-btn {
                     background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
                     color: white;
                     border: none;
-                    padding: 10px 20px;
-                    border-radius: 20px;
+                    padding: 16px 30px;
                     cursor: pointer;
-                    font-size: 16px;
+                    font-size: 18px;
+                    font-weight: bold;
                     transition: all 0.3s ease;
+                    min-width: 100px;
                 }
                 
-                .search-button:hover {
+                .search-btn:hover {
                     background: linear-gradient(135deg, #2980b9 0%, #1f618d 100%);
-                    transform: translateY(-50%) translateY(-2px);
+                    transform: translateY(-1px);
+                }
+                
+                .search-btn:active {
+                    transform: translateY(0);
+                }
+                
+                /* 响应式设计 - 与首页一致 */
+                @media (max-width: 768px) {
+                    .header-content {
+                        flex-direction: column;
+                        gap: 15px;
+                    }
+                    
+                    .logo {
+                        font-size: 28px;
+                    }
+                    
+                    .search-container {
+                        width: 100%;
+                        max-width: none;
+                    }
+                    
+                    .search-form {
+                        flex-direction: column;
+                    }
+                    
+                    .search-input {
+                        padding: 12px 15px;
+                        font-size: 16px;
+                    }
+                    
+                    .search-btn {
+                        padding: 12px 20px;
+                        font-size: 16px;
+                        min-width: auto;
+                    }
                 }
                 
                 .main-content {
                     max-width: 1200px;
                     margin: 20px auto;
-                    padding: 0 20px;
+                    padding: 0 15px;
                 }
                 
                 .search-info {
@@ -320,61 +375,21 @@ class SearchEngine {
                     text-align: center;
                     font-weight: bold;
                 }
-                
-                .loading {
-                    text-align: center;
-                    padding: 40px;
-                    color: #7f8c8d;
-                }
-                
-                .loading::after {
-                    content: '';
-                    display: inline-block;
-                    width: 20px;
-                    height: 20px;
-                    border: 2px solid #3498db;
-                    border-radius: 50%;
-                    border-top-color: transparent;
-                    animation: spin 1s linear infinite;
-                    margin-left: 10px;
-                }
-                
-                @keyframes spin {
-                    to { transform: rotate(360deg); }
-                }
-                
-                /* 响应式设计 */
-                @media (max-width: 768px) {
-                    .search-info {
-                        flex-direction: column;
-                        align-items: flex-start;
-                    }
-                    
-                    .search-stats {
-                        flex-wrap: wrap;
-                        gap: 10px;
-                    }
-                    
-                    .result-item {
-                        padding: 20px 15px;
-                    }
-                    
-                    .result-title {
-                        font-size: 18px;
-                    }
-                }
             </style>
         </head>
         <body>
+            <!-- 头部 - 与首页完全一致 -->
             <div class="header">
                 <div class="header-content">
-                    <div class="logo">官网直达</div>
-                    <form class="search-form" method="POST">
-                        <input type="text" name="query" class="search-input" 
-                               value="<?php echo htmlspecialchars($query); ?>" 
-                               placeholder="搜索官方网站..." required>
-                        <button type="submit" class="search-button">搜索</button>
-                    </form>
+                    <a href="/" class="logo">官网直达</a>
+                    <div class="search-container">
+                        <form method="POST" class="search-form">
+                            <input type="text" name="query" class="search-input" 
+                                   value="<?php echo htmlspecialchars($query); ?>" 
+                                   placeholder="请输入搜索关键词..." required>
+                            <button type="submit" class="search-btn">搜索</button>
+                        </form>
+                    </div>
                 </div>
             </div>
             
