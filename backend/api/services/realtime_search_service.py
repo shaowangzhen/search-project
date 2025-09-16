@@ -66,10 +66,12 @@ class RealtimeSearchService:
                     return data.get('网站名录', {})
             else:
                 print(f"⚠️ 官网名录文件不存在: {file_path}")
-                return {}
+                return {
+                "query": query,}
         except Exception as e:
             print(f"❌ 加载官网名录失败: {e}")
-            return {}
+            return {
+                "query": query,}
 
     def _search_official_websites(self, query):
         """在官网名录中搜索匹配的网站"""
@@ -360,6 +362,7 @@ class RealtimeSearchService:
         if official_results:
             print(f"✅ 从官网名录找到 {len(official_results)} 个结果，直接返回")
             return {
+                "query": query,
                 "results": official_results[:max_results],
                 "total_results": len(official_results),
                 "search_time": "0.01s",
@@ -456,6 +459,7 @@ class RealtimeSearchService:
             print(f"🎯 搜索完成，返回 {len(official_results)} 个结果，使用了 {len(engines_used)} 个搜索引擎，耗时 {search_time}")
             
             return {
+                "query": query,
                 "results": official_results,
                 "total_results": len(official_results),
                 "search_time": search_time,
