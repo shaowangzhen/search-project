@@ -74,3 +74,4 @@ dump.rdb
 
 # MySQL
 *.sql.backup
+.codelink

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投资组合分析工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .asset-item {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .asset-info {
+            flex: 1;
+        }
+
+        .asset-info strong {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .asset-info span {
+            color: #666;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .allocation-chart {
+            margin-top: 20px;
+        }
+
+        .allocation-item {
+            margin-bottom: 10px;
+        }
+
+        .allocation-bar {
+            height: 30px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .allocation-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        #results {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 投资组合分析工具</h1>
+            <p>实时分析您的投资组合，计算收益率和风险指标</p>
+        </div>
+
+        <div class="card">
+            <h2>📊 添加资产</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>股票代码</label>
+                    <input type="text" id="symbolInput" placeholder="如: 600000.SH">
+                </div>
+                <div class="form-group">
+                    <label>股票名称</label>
+                    <input type="text" id="nameInput" placeholder="如: 浦发银行">
+                </div>
+                <div class="form-group">
+                    <label>持有数量</label>
+                    <input type="number" id="quantityInput" placeholder="如: 1000">
+                </div>
+                <div class="form-group">
+                    <label>平均成本</label>
+                    <input type="number" step="0.01" id="costInput" placeholder="如: 10.5">
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="addAsset()">添加资产</button>
+        </div>
+
+        <div class="card">
+            <h2>💼 我的投资组合</h2>
+            <div id="assetList">
+                <p style="color: #666; text-align: center;">暂无资产，请添加</p>
+            </div>
+            <div class="form-group" style="margin-top: 20px;">
+                <label>现金余额 (¥)</label>
+                <input type="number" step="0.01" id="cashInput" value="50000" placeholder="现金余额">
+            </div>
+            <button class="btn" onclick="analyzePortfolio()">开始分析</button>
+        </div>
+
+        <div id="results">
+            <div class="card">
+                <h2>📈 组合指标</h2>
+                <div class="metrics-grid" id="metricsGrid"></div>
+            </div>
+
+            <div class="card">
+                <h2>🎯 资产配置</h2>
+                <div class="allocation-chart" id="allocationChart"></div>
+            </div>
+
+            <div class="card">
+                <h2>📝 资产详情</h2>
+                <div id="assetDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8001';
+        let assets = [];
+
+        function addAsset() {
+            const symbol = document.getElementById('symbolInput').value.trim();
+            const name = document.getElementById('nameInput').value.trim();
+            const quantity = parseFloat(document.getElementById('quantityInput').value);
+            const cost = parseFloat(document.getElementById('costInput').value);
+
+            if (!symbol || !name || !quantity || !cost) {
+                alert('请填写完整的资产信息');
+                return;
+            }
+
+            assets.push({
+                symbol: symbol,
+                name: name,
+                asset_type: 'stock',
+                quantity: quantity,
+                avg_cost: cost
+            });
+
+            updateAssetList();
+
+            // 清空输入
+            document.getElementById('symbolInput').value = '';
+            document.getElementById('nameInput').value = '';
+            document.getElementById('quantityInput').value = '';
+            document.getElementById('costInput').value = '';
+        }
+
+        function removeAsset(index) {
+            assets.splice(index, 1);
+            updateAssetList();
+        }
+
+        function updateAssetList() {
+            const container = document.getElementById('assetList');
+
+            if (assets.length === 0) {
+                container.innerHTML = '<p style="color: #666; text-align: center;">暂无资产，请添加</p>';
+                return;
+            }
+
+            container.innerHTML = assets.map((asset, index) => `
+                <div class="asset-item">
+                    <div class="asset-info">
+                        <strong>${asset.name}</strong>
+                        <span>${asset.symbol}</span>
+                        <span>数量: ${asset.quantity}</span>
+                        <span>成本: ¥${asset.avg_cost.toFixed(2)}</span>
+                    </div>
+                    <button class="btn btn-danger" onclick="removeAsset(${index})">删除</button>
+                </div>
+            `).join('');
+        }
+
+        async function analyzePortfolio() {
+            if (assets.length === 0) {
+                alert('请至少添加一个资产');
+                return;
+            }
+
+            const cash = parseFloat(document.getElementById('cashInput').value) || 0;
+
+            const portfolio = {
+                name: '我的投资组合',
+                assets: assets,
+                cash: cash
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/portfolio/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        portfolio: portfolio,
+                        risk_free_rate: 0.03
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('分析失败');
+                }
+
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                alert('分析失败: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        function displayResults(data) {
+            const { portfolio, metrics } = data;
+
+            // 显示结果区域
+            document.getElementById('results').style.display = 'block';
+
+            // 显示指标
+            const metricsHtml = `
+                <div class="metric-card">
+                    <div class="metric-label">总市值</div>
+                    <div class="metric-value">¥${metrics.total_value.toLocaleString('zh-CN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">总收益</div>
+                    <div class="metric-value">¥${metrics.total_return.toLocaleString('zh-CN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">收益率</div>
+                    <div class="metric-value">${(metrics.total_return_rate * 100).toFixed(2)}%</div>
+                </div>
+                ${metrics.annualized_return ? `
+                <div class="metric-card">
+                    <div class="metric-label">年化收益率</div>
+                    <div class="metric-value">${(metrics.annualized_return * 100).toFixed(2)}%</div>
+                </div>
+                ` : ''}
+                ${metrics.sharpe_ratio ? `
+                <div class="metric-card">
+                    <div class="metric-label">夏普比率</div>
+                    <div class="metric-value">${metrics.sharpe_ratio.toFixed(2)}</div>
+                </div>
+                ` : ''}
+                ${metrics.volatility ? `
+                <div class="metric-card">
+                    <div class="metric-label">波动率</div>
+                    <div class="metric-value">${(metrics.volatility * 100).toFixed(2)}%</div>
+                </div>
+                ` : ''}
+            `;
+            document.getElementById('metricsGrid').innerHTML = metricsHtml;
+
+            // 显示资产配置
+            const allocationHtml = Object.entries(metrics.asset_allocation)
+                .map(([type, weight]) => `
+                    <div class="allocation-item">
+                        <div class="allocation-bar">
+                            <div class="allocation-fill" style="width: ${weight * 100}%">
+                                ${type}: ${(weight * 100).toFixed(1)}%
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            document.getElementById('allocationChart').innerHTML = allocationHtml;
+
+            // 显示资产详情
+            const detailsHtml = portfolio.assets.map(asset => {
+                const mv = asset.current_price ? asset.quantity * asset.current_price : null;
+                const cost = asset.quantity * asset.avg_cost;
+                const pl = mv ? mv - cost : null;
+                const plRate = mv && cost ? ((mv - cost) / cost * 100) : null;
+
+                return `
+                    <div class="asset-item">
+                        <div class="asset-info">
+                            <strong>${asset.name} (${asset.symbol})</strong><br>
+                            <span>持仓: ${asset.quantity} 股</span>
+                            <span>成本价: ¥${asset.avg_cost.toFixed(2)}</span>
+                            ${asset.current_price ? `<span>当前价: ¥${asset.current_price.toFixed(2)}</span>` : ''}
+                            ${mv ? `<span>市值: ¥${mv.toLocaleString('zh-CN', {minimumFractionDigits: 2})}</span>` : ''}
+                            ${pl !== null ? `<span style="color: ${pl >= 0 ? '#48bb78' : '#f56565'}">盈亏: ¥${pl.toFixed(2)} (${plRate.toFixed(2)}%)</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('assetDetails').innerHTML = detailsHtml;
+
+            // 滚动到结果
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
